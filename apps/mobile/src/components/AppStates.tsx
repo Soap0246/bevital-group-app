@@ -20,7 +20,7 @@ export function SplashView({ message }: { message?: string }) {
   return (
     <SafeAreaView style={styles.splash}>
       <Animated.View entering={FadeIn.duration(500)} style={styles.splashCenter}>
-        <Logo variant="main" height={84} />
+        <Logo variant="main" height={170} />
         <Text variant="caption" color="textMuted" style={{ letterSpacing: 1.6 }}>{BRAND.tagline.toUpperCase()}</Text>
       </Animated.View>
       <View style={styles.track} accessible accessibilityLabel={message ?? 'Loading'} accessibilityRole="progressbar">
@@ -42,7 +42,7 @@ export function FullScreenLoader() {
 export function SetupScreen() {
   return (
     <SafeAreaView style={styles.setup}>
-      <Logo variant="main" height={56} />
+      <Logo variant="main" height={96} />
       <Card style={{ marginTop: 24 }}>
         <View style={{ gap: 10 }}>
           <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>

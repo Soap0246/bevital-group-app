@@ -16,7 +16,7 @@ export function PageHeader({ title, description, actions }: { title: string; des
 
 export function Card({ children, className = "", title, action }: { children: ReactNode; className?: string; title?: string; action?: ReactNode }) {
   return (
-    <section className={`rounded-2xl border border-line bg-surface p-5 shadow-[0_6px_18px_rgba(11,42,60,0.05)] ${className}`}>
+    <section className={`rounded-3xl border border-line/70 bg-surface p-5 shadow-[0_8px_24px_rgba(16,38,26,0.06)] ${className}`}>
       {title ? (
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="text-base font-semibold text-ink">{title}</h2>
@@ -31,8 +31,8 @@ export function Card({ children, className = "", title, action }: { children: Re
 export function StatCard({ label, value, hint, tone = "brand" }: { label: string; value: ReactNode; hint?: string; tone?: "brand" | "success" | "warning" | "danger" | "info" }) {
   const accent = { brand: "bg-brand", success: "bg-success", warning: "bg-warning", danger: "bg-danger", info: "bg-info" }[tone];
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-[0_6px_18px_rgba(11,42,60,0.05)]">
-      <span className={`absolute inset-y-0 left-0 w-1 ${accent}`} aria-hidden />
+    <div className="relative overflow-hidden rounded-3xl border border-line/70 bg-surface p-5 shadow-[0_8px_24px_rgba(16,38,26,0.06)]">
+      <span className={`absolute inset-x-0 top-0 h-1 ${accent}`} aria-hidden />
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</p>
       <p className="mt-2 text-3xl font-extrabold tracking-tight text-ink">{value}</p>
       {hint ? <p className="mt-1 text-xs text-subtle">{hint}</p> : null}

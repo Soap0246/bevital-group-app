@@ -11,5 +11,4 @@ recolour or re-type them.
 After replacing the files, open `src/config/branding.ts`, set `isPlaceholder: false` and set each
 logo's `aspectRatio` (width ÷ height of the supplied artwork). Nothing else needs to change.
 
-Current files are fully transparent 1×1 placeholders so the app builds; the UI draws a dashed
-"logo placeholder" frame around them until `isPlaceholder` is switched off.
+The official BeVital artwork is installed (transparent PNGs trimmed from the supplied JPGs).

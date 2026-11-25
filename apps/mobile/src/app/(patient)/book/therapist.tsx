@@ -6,6 +6,7 @@ import { BookStep } from '@/components/domain/BookStep';
 import { TherapistCardFromSearch } from '@/components/domain/cards';
 import { Card, EmptyState, ErrorState, Icon, LoadingList, Text, Button } from '@/components/ui';
 import { useBookingDraft } from '@/lib/bookingDraft';
+import { colors } from '@/theme';
 
 /** Steps 5–6 — see who is available for this exact slot, then choose a therapist or let BeVital match you. */
 export default function SelectTherapist() {
@@ -36,9 +37,9 @@ export default function SelectTherapist() {
 
   return (
     <BookStep step={5} title="Choose your physiotherapist" footer={<Button label="Continue" onPress={() => router.push('/book/review')} disabled={(list.data ?? []).length === 0} />}>
-      <Card onPress={() => update({ therapist: null })} style={auto ? { borderColor: '#0E7C86', borderWidth: 2 } : undefined} tone={auto ? 'tinted' : 'default'} accessibilityLabel="Automatic matching, recommended">
+      <Card onPress={() => update({ therapist: null })} style={auto ? { borderColor: colors.primary, borderWidth: 2 } : undefined} tone={auto ? 'tinted' : 'default'} accessibilityLabel="Automatic matching, recommended">
         <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-          <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="flash" size={24} color="primary" />
           </View>
           <View style={{ flex: 1 }}>

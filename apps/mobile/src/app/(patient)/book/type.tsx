@@ -6,6 +6,7 @@ import { useFamily } from '@/api/profile';
 import { BookStep } from '@/components/domain/BookStep';
 import { Banner, Button, Card, Chip, ChipRow, Icon, Text } from '@/components/ui';
 import { useBookingDraft } from '@/lib/bookingDraft';
+import { colors } from '@/theme';
 
 /** Step 2 — clinic or home, and who the appointment is for. */
 export default function SelectType() {
@@ -27,11 +28,11 @@ export default function SelectType() {
         <Card
           key={o.type}
           onPress={o.ok ? () => update({ type: o.type }) : undefined}
-          style={draft.type === o.type ? { borderColor: '#0E7C86', borderWidth: 2 } : o.ok ? undefined : { opacity: 0.5 }}
+          style={draft.type === o.type ? { borderColor: colors.primary, borderWidth: 2 } : o.ok ? undefined : { opacity: 0.5 }}
           accessibilityLabel={`${o.title}${o.ok ? '' : ', not available for this service'}`}
         >
           <View style={{ flexDirection: 'row', gap: 14, alignItems: 'center' }}>
-            <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: '#E3F4F5', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' }}>
               <Icon name={o.icon} size={26} color="primary" />
             </View>
             <View style={{ flex: 1, gap: 2 }}>

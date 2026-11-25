@@ -4,8 +4,10 @@ import { useRouter } from 'expo-router';
 import { useClinics } from '@/api/catalog';
 import { useAddresses } from '@/api/profile';
 import { BookStep } from '@/components/domain/BookStep';
+import { ClinicMap } from '@/components/map/ClinicMap';
 import { Button, Card, EmptyState, Icon, LoadingList, Text } from '@/components/ui';
 import { useBookingDraft } from '@/lib/bookingDraft';
+import { colors } from '@/theme';
 
 /** Step 3 — pick a clinic, or the address for the home visit. */
 export default function SelectLocation() {
@@ -26,7 +28,7 @@ export default function SelectLocation() {
             <EmptyState icon="location-outline" title="No saved addresses" body="Add the address where you'd like to be treated. Pin it on the map so your physiotherapist can find you." />
           ) : (
             (addresses.data ?? []).map((a) => (
-              <Card key={a.id} onPress={() => update({ address: a })} style={draft.address?.id === a.id ? { borderColor: '#0E7C86', borderWidth: 2 } : undefined} accessibilityLabel={`${a.label}, ${a.line1}`}>
+              <Card key={a.id} onPress={() => update({ address: a })} style={draft.address?.id === a.id ? { borderColor: colors.primary, borderWidth: 2 } : undefined} accessibilityLabel={`${a.label}, ${a.line1}`}>
                 <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
                   <Icon name={a.label.toLowerCase() === 'work' ? 'briefcase-outline' : 'home-outline'} size={24} color="primary" />
                   <View style={{ flex: 1 }}>
@@ -42,8 +44,12 @@ export default function SelectLocation() {
         </>
       ) : (
         <>
+          {(clinics.data ?? []).some((c) => c.latitude != null) ? (
+            <ClinicMap clinics={(clinics.data ?? []).filter((c) => c.latitude != null)} selectedId={draft.clinicId} height={240}
+              onSelect={(id) => { const c = (clinics.data ?? []).find((x) => x.id === id); if (c) update({ clinicId: c.id, clinicName: c.name }); }} />
+          ) : null}
           {clinics.isLoading ? <LoadingList count={2} /> : (clinics.data ?? []).map((c) => (
-            <Card key={c.id} onPress={() => update({ clinicId: c.id, clinicName: c.name })} style={draft.clinicId === c.id ? { borderColor: '#0E7C86', borderWidth: 2 } : undefined} accessibilityLabel={c.name}>
+            <Card key={c.id} onPress={() => update({ clinicId: c.id, clinicName: c.name })} style={draft.clinicId === c.id ? { borderColor: colors.primary, borderWidth: 2 } : undefined} accessibilityLabel={c.name}>
               <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
                 <Icon name="business-outline" size={24} color="primary" />
                 <View style={{ flex: 1 }}>

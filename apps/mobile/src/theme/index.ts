@@ -5,7 +5,7 @@ export const colors = COLORS;
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32, huge: 40 } as const;
 
-export const radius = { sm: 10, md: 14, lg: 20, xl: 28, pill: 999 } as const;
+export const radius = { sm: 12, md: 16, lg: 22, xl: 30, pill: 999 } as const;
 
 /** Minimum touch target (elderly / limited-dexterity friendly; WCAG recommends ≥ 44). */
 export const TOUCH_TARGET = 52;
@@ -44,14 +44,14 @@ export const typography: Record<TextVariant, TextStyle> = {
 
 export const shadow = {
   card: Platform.select<ViewStyle>({
-    ios: { shadowColor: '#0B2A3C', shadowOpacity: 0.07, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } },
+    ios: { shadowColor: '#10261A', shadowOpacity: 0.07, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } },
     android: { elevation: 3 },
-    default: { boxShadow: '0 6px 18px rgba(11,42,60,0.08)' } as ViewStyle,
+    default: { boxShadow: '0 6px 18px rgba(16,38,26,0.08)' } as ViewStyle,
   }) as ViewStyle,
   float: Platform.select<ViewStyle>({
-    ios: { shadowColor: '#0B2A3C', shadowOpacity: 0.14, shadowRadius: 24, shadowOffset: { width: 0, height: 10 } },
+    ios: { shadowColor: '#10261A', shadowOpacity: 0.14, shadowRadius: 24, shadowOffset: { width: 0, height: 10 } },
     android: { elevation: 8 },
-    default: { boxShadow: '0 10px 28px rgba(11,42,60,0.16)' } as ViewStyle,
+    default: { boxShadow: '0 10px 28px rgba(16,38,26,0.16)' } as ViewStyle,
   }) as ViewStyle,
 };
 

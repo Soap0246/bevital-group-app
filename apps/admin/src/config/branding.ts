@@ -20,8 +20,8 @@ export const branding = {
   name: BRAND.name,
   tagline: BRAND.tagline,
   logos: {
-    main: { src: "/brand/logo-main.png", aspectRatio: 3.2, isPlaceholder: true, alt: "BeVital" },
-    nolb: { src: "/brand/logo-no-one-left-behind.png", aspectRatio: 3.2, isPlaceholder: true, alt: "BeVital — No One Left Behind" },
+    main: { src: "/brand/logo-main.png", aspectRatio: 0.849, isPlaceholder: false, alt: "BeVital" },
+    nolb: { src: "/brand/logo-no-one-left-behind.png", aspectRatio: 4.405, isPlaceholder: false, alt: "BeVital — No One Left Behind" },
   } satisfies Record<"main" | "nolb", LogoConfig>,
 } as const;
 

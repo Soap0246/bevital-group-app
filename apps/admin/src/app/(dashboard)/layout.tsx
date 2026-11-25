@@ -9,7 +9,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   return (
     <div className="min-h-screen lg:flex">
       <Sidebar
-        logo={<Logo variant="nolb" height={36} />}
+        logo={<Logo variant="nolb" height={44} />}
         user={{ name: profile.full_name || "Administrator", email: profile.email ?? "" }}
         signOut={
           <form action={signOutAction}>

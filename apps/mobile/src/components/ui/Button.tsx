@@ -1,11 +1,12 @@
 import React from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors, radius, shadow, TOUCH_TARGET } from '@/theme';
 import { Text } from './Text';
 import { Icon, type IconName } from './Icon';
 
-type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'lime';
 
 export interface ButtonProps {
   label: string;
@@ -22,12 +23,13 @@ export interface ButtonProps {
   testID?: string;
 }
 
-const palette: Record<Variant, { bg: string; fg: 'surface' | 'primaryDark' | 'primary' | 'danger' | 'text'; border?: string }> = {
+const palette: Record<Variant, { bg: string; fg: 'surface' | 'primaryDark' | 'primary' | 'danger' | 'text' | 'ink'; border?: string }> = {
   primary: { bg: colors.primary, fg: 'surface' },
   secondary: { bg: colors.primaryLight, fg: 'primaryDark' },
   outline: { bg: 'transparent', fg: 'primary', border: colors.primary },
   ghost: { bg: 'transparent', fg: 'primary' },
   danger: { bg: colors.dangerLight, fg: 'danger' },
+  lime: { bg: colors.lime, fg: 'ink' },
 };
 
 export function Button({
@@ -57,10 +59,13 @@ export function Button({
           transform: [{ scale: pressed ? 0.98 : 1 }],
           alignSelf: fullWidth ? 'stretch' : 'flex-start',
         },
-        variant === 'primary' && !inactive ? shadow.card : null,
+        (variant === 'primary' || variant === 'lime') && !inactive ? shadow.card : null,
         style,
       ]}
     >
+      {variant === 'primary' && !inactive ? (
+        <LinearGradient colors={['#5E9419', colors.primary, colors.primaryDark]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]} />
+      ) : null}
       {loading ? (
         <ActivityIndicator color={colors[p.fg]} />
       ) : (

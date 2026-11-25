@@ -26,7 +26,7 @@ interface ScreenProps {
 }
 
 export function Screen({
-  children, title, subtitle, back, right, header, scroll = true, padded = true, refreshing, onRefresh, footer, background = colors.background, contentStyle,
+  children, title, subtitle, back, right, header, scroll = true, padded = true, refreshing, onRefresh, footer, background = colors.surfaceAlt, contentStyle,
 }: ScreenProps) {
   const router = useRouter();
   const showBack = back ?? Boolean(title);

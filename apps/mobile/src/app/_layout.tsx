@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Stack, useRouter } from 'expo-router';
+import { Platform, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
@@ -16,6 +17,17 @@ import { ToastProvider } from '@/components/ui';
 import { isSupabaseConfigured } from '@/config/env';
 import { FullScreenLoader, SetupScreen, SplashView } from '@/components/AppStates';
 import { registerForPush } from '@/lib/notifications';
+import { colors } from '@/theme';
+
+/** Web only: on tablets/desktops present the app as a centred, phone-width column. Native is untouched. */
+function WebFrame({ children }: { children: React.ReactNode }) {
+  if (Platform.OS !== 'web') return <>{children}</>;
+  return (
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor: colors.primaryLight }}>
+      <View style={{ flex: 1, width: '100%', maxWidth: 560, backgroundColor: colors.surfaceAlt, boxShadow: '0 0 60px rgba(16,38,26,0.14)' } as never}>{children}</View>
+    </View>
+  );
+}
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -87,6 +99,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
+      <WebFrame>
       {!isSupabaseConfigured ? (
         <SetupScreen />
       ) : (
@@ -100,6 +113,7 @@ export default function RootLayout() {
           </A11yProvider>
         </QueryClientProvider>
       )}
+      </WebFrame>
     </SafeAreaProvider>
   );
 }

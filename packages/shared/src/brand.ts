@@ -1,14 +1,7 @@
 /**
  * BeVital brand tokens shared by the mobile app and the admin dashboard.
- *
- * ⚠️  PROVISIONAL COLOURS — the official BeVital corporate palette has not been
- * supplied yet. These values are a neutral, premium healthcare palette used so the
- * UI is coherent during development. Replace the values below with the official
- * brand colours (one place, both apps pick them up).
- *
- * Logos are NOT defined here. Each app has its own `branding` config that points at
- * the official logo files supplied by BeVital (see apps/mobile/src/config/branding.ts
- * and apps/admin/src/config/branding.ts).
+ * Palette derived from the official BeVital logos (fresh green on white) with accessible contrast.
+ * Logos themselves live in each app's branding config and are never redrawn.
  */
 export const BRAND = {
   name: 'BeVital',
@@ -22,30 +15,34 @@ export const BRAND = {
 } as const;
 
 export const COLORS = {
-  // Primary
-  primary: '#0E7C86',
-  primaryDark: '#0A5A62',
-  primaryLight: '#E3F4F5',
-  primaryMuted: '#7FC3C9',
-  // Deep ink used for headings and the dark surfaces
-  ink: '#0B2A3C',
-  inkSoft: '#35505F',
-  // Neutrals
-  text: '#17303F',
-  textMuted: '#5C7280',
-  textSubtle: '#8CA0AC',
-  border: '#E3EAEE',
-  borderStrong: '#CBD7DE',
+  // Brand greens (sampled from the official logos: #94C01C stacked emblem, #8CC440 lock-up)
+  lime: '#8CC440',
+  limeLight: '#F3F9E6',
+  // Primary action colour: a deeper green so white text passes WCAG AA (5.1:1). The logo lime
+  // itself is too light for text/buttons on white, so it is used for accents and highlights.
+  primary: '#4C7A12',
+  primaryDark: '#365B0B',
+  primaryLight: '#EEF6DC',
+  primaryMuted: '#A9D26B',
+  // Deep forest ink for headings and dark surfaces
+  ink: '#10261A',
+  inkSoft: '#2F4A38',
+  // Neutrals (warm-green tinted)
+  text: '#1C3326',
+  textMuted: '#566A5B',
+  textSubtle: '#8A9C8F',
+  border: '#E3EBDD',
+  borderStrong: '#C9D6C0',
   surface: '#FFFFFF',
-  surfaceAlt: '#F5F8FA',
+  surfaceAlt: '#F5F9F0',
   background: '#FFFFFF',
-  // Accent used sparingly for promotions / highlights
+  // Warm accent for promotions / highlights
   accent: '#F2A33A',
   accentLight: '#FEF3E1',
   // Semantic
-  success: '#1F9D6B',
-  successLight: '#E4F6EE',
-  warning: '#D98A0B',
+  success: '#12906A',
+  successLight: '#E1F5EE',
+  warning: '#C97F0A',
   warningLight: '#FDF1DC',
   danger: '#D64545',
   dangerLight: '#FCE9E9',

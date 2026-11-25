@@ -30,14 +30,14 @@ export const branding = {
   logos: {
     main: {
       source: require('../../assets/brand/logo-main.png'),
-      aspectRatio: 3.2,
-      isPlaceholder: true,
+      aspectRatio: 0.849,
+      isPlaceholder: false,
       accessibilityLabel: 'BeVital',
     },
     nolb: {
       source: require('../../assets/brand/logo-no-one-left-behind.png'),
-      aspectRatio: 3.2,
-      isPlaceholder: true,
+      aspectRatio: 4.405,
+      isPlaceholder: false,
       accessibilityLabel: 'BeVital — No One Left Behind',
     },
   } satisfies Record<'main' | 'nolb', LogoConfig>,

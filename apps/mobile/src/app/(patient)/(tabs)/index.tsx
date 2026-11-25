@@ -10,7 +10,8 @@ import { AppointmentCard, ArticleCard, CategoryBubble, PromoCard, TherapistCard 
 import { ProgressRing } from '@/components/charts/charts';
 import { Button, Card, EmptyState, Icon, Logo, Screen, SearchBar, SectionHeader, Skeleton, Text } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
-import { colors, radius } from '@/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { colors, radius, shadow } from '@/theme';
 
 function HomeHeader() {
   const router = useRouter();
@@ -18,9 +19,9 @@ function HomeHeader() {
   const unread = (notifications.data ?? []).filter((n) => !n.read_at).length;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 6 }}>
-      <Logo variant="nolb" height={38} />
+      <Logo variant="nolb" height={42} />
       <Pressable accessibilityRole="button" accessibilityLabel={unread ? `Notifications, ${unread} unread` : 'Notifications'} onPress={() => router.push('/notifications')}
-        style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' }}>
+        style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' }}>
         <Icon name="notifications-outline" size={24} />
         {unread > 0 ? <View style={{ position: 'absolute', top: 8, right: 9, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.danger, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 }}><Text variant="label" color="surface" style={{ fontSize: 10, lineHeight: 12 }}>{unread > 9 ? '9+' : unread}</Text></View> : null}
       </Pressable>
@@ -55,19 +56,24 @@ export default function Home() {
       <SearchBar value={q} onChangeText={setQ} onSubmit={() => router.push({ pathname: '/services', params: { q } })} />
 
       {/* Primary action */}
-      <Card tone="dark" style={{ marginTop: 20, padding: 20 }}>
-        <Text variant="label" color="primaryMuted">NO ONE LEFT BEHIND</Text>
-        <Text variant="title" color="surface" style={{ marginTop: 6, marginBottom: 14 }}>Book a physiotherapist</Text>
-        <Button label="Book now" icon="calendar" onPress={() => router.push('/book')} style={{ backgroundColor: colors.surface }} />
-        <View style={{ flexDirection: 'row', gap: 12, marginTop: 12 }}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Home Physiotherapy" onPress={() => router.push({ pathname: '/book', params: { type: 'home' } })} style={tile}>
-            <Icon name="home" size={26} color="primary" /><Text variant="bodyStrong" color="surface">Home{'\n'}Physiotherapy</Text>
-          </Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel="Clinic Appointment" onPress={() => router.push({ pathname: '/book', params: { type: 'clinic' } })} style={tile}>
-            <Icon name="business" size={26} color="primary" /><Text variant="bodyStrong" color="surface">Clinic{'\n'}Appointment</Text>
-          </Pressable>
-        </View>
-      </Card>
+      <View style={[{ marginTop: 20, borderRadius: radius.xl }, shadow.float]}>
+        <LinearGradient colors={[colors.ink, '#1F4A25', colors.primaryDark]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ borderRadius: radius.xl, padding: 22, overflow: 'hidden' }}>
+          <View pointerEvents="none" style={{ position: 'absolute', right: -40, top: -40, width: 170, height: 170, borderRadius: 85, backgroundColor: colors.lime, opacity: 0.18 }} />
+          <View pointerEvents="none" style={{ position: 'absolute', right: 40, bottom: -60, width: 120, height: 120, borderRadius: 60, backgroundColor: colors.lime, opacity: 0.1 }} />
+          <Text variant="label" style={{ color: colors.lime, letterSpacing: 1.2 }}>NO ONE LEFT BEHIND</Text>
+          <Text variant="title" color="surface" style={{ marginTop: 6, marginBottom: 4 }}>Book a physiotherapist</Text>
+          <Text color="primaryMuted" style={{ marginBottom: 16 }}>Expert care at a BeVital clinic or at your home.</Text>
+          <Button label="Book now" icon="calendar" variant="lime" onPress={() => router.push('/book')} />
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 12 }}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Home Physiotherapy" onPress={() => router.push({ pathname: '/book', params: { type: 'home' } })} style={tile}>
+              <Icon name="home" size={26} color="lime" /><Text variant="bodyStrong" color="surface" style={{ flex: 1, fontSize: 14, lineHeight: 18 }}>Home Physiotherapy</Text>
+            </Pressable>
+            <Pressable accessibilityRole="button" accessibilityLabel="Clinic Appointment" onPress={() => router.push({ pathname: '/book', params: { type: 'clinic' } })} style={tile}>
+              <Icon name="business" size={26} color="lime" /><Text variant="bodyStrong" color="surface" style={{ flex: 1, fontSize: 14, lineHeight: 18 }}>Clinic Appointment</Text>
+            </Pressable>
+          </View>
+        </LinearGradient>
+      </View>
 
       <SectionHeader title="Browse services" action="See all" onAction={() => router.push('/services')} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 20 }} style={{ marginHorizontal: -20 }}>
@@ -92,6 +98,15 @@ export default function Home() {
           ))}
         </ScrollView>
       )}
+
+      <SectionHeader title="Find a clinic" action="Open map" onAction={() => router.push('/clinics')} />
+      <Card onPress={() => router.push('/clinics')} tone="tinted" accessibilityLabel="Open the clinic map">
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+          <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' }}><Icon name="map" size={26} color="primary" /></View>
+          <View style={{ flex: 1 }}><Text variant="subheading">BeVital clinic map</Text><Text variant="caption" color="inkSoft">See clinic locations, opening hours and get directions.</Text></View>
+          <Icon name="chevron-forward" size={20} color="textSubtle" />
+        </View>
+      </Card>
 
       <SectionHeader title="Recovery progress" action="Open" onAction={() => router.push('/recovery')} />
       {recovery.data && recovery.data.programmes.length > 0 && week ? (
@@ -130,4 +145,4 @@ export default function Home() {
   );
 }
 
-const tile = { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 64, paddingHorizontal: 14, borderRadius: radius.lg, backgroundColor: 'rgba(255,255,255,0.1)' } as const;
+const tile = { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 64, paddingHorizontal: 12, borderRadius: radius.lg, backgroundColor: 'rgba(255,255,255,0.1)' } as const;

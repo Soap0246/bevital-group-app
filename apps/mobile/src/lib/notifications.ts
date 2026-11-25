@@ -29,7 +29,7 @@ export type PushStatus = 'registered' | 'denied' | 'unsupported' | 'missing-proj
 export async function registerForPush(userId: string): Promise<PushStatus> {
   if (Platform.OS === 'web' || !Device.isDevice) return 'unsupported';
   if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', { name: 'BeVital', importance: Notifications.AndroidImportance.DEFAULT, lightColor: '#0E7C86' });
+    await Notifications.setNotificationChannelAsync('default', { name: 'BeVital', importance: Notifications.AndroidImportance.DEFAULT, lightColor: '#4C7A12' });
   }
   const existing = await Notifications.getPermissionsAsync();
   let status = existing.status;

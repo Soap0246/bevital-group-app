@@ -37,12 +37,12 @@ export function Sidebar({ logo, user, signOut }: { logo: React.ReactNode; user: 
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
       </div>
-      <aside className={`${open ? "block" : "hidden"} fixed inset-x-0 top-[65px] bottom-0 z-20 overflow-y-auto border-r border-line bg-surface p-4 lg:sticky lg:top-0 lg:block lg:h-screen lg:w-64 lg:shrink-0`} aria-label="Primary">
-        <div className="mb-6 hidden px-2 lg:block">{logo}</div>
+      <aside className={`${open ? "block" : "hidden"} fixed inset-x-0 top-[73px] bottom-0 z-20 overflow-y-auto border-r border-line bg-surface p-4 lg:sticky lg:top-0 lg:block lg:h-screen lg:w-64 lg:shrink-0`} aria-label="Primary">
+        <div className="mb-6 hidden px-2 pt-2 lg:block">{logo}</div>
         <nav className="space-y-1">
           {NAV.map(({ href, label, icon: Icon }) => (
             <Link key={href} href={href} onClick={() => setOpen(false)} aria-current={active(href) ? "page" : undefined}
-              className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-colors ${active(href) ? "bg-brand text-white" : "text-ink-soft hover:bg-brand-light hover:text-brand-dark"}`}>
+              className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-colors ${active(href) ? "bg-brand text-white shadow-[0_6px_14px_rgba(76,122,18,0.25)]" : "text-ink-soft hover:bg-brand-light hover:text-brand-dark"}`}>
               <Icon className="size-5 shrink-0" aria-hidden />
               {label}
             </Link>

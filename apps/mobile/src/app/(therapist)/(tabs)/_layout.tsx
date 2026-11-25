@@ -30,7 +30,7 @@ export default function TherapistTabs() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarLabelStyle: { fontFamily: fontFamily.semibold, fontSize: 11.5, marginTop: 2 },
-        tabBarStyle: { height: 66 + insets.bottom, paddingTop: 8, paddingBottom: Math.max(insets.bottom, 8), borderTopColor: colors.border, backgroundColor: colors.surface },
+        tabBarStyle: { height: 74 + insets.bottom, paddingTop: 10, paddingBottom: Math.max(insets.bottom, 14), borderTopWidth: 0, backgroundColor: colors.surface, borderTopLeftRadius: 26, borderTopRightRadius: 26, shadowColor: '#10261A', shadowOpacity: 0.1, shadowRadius: 18, shadowOffset: { width: 0, height: -6 }, elevation: 14 },
       }}
     >
       {tabs.map((t) => <Tabs.Screen key={t.name} name={t.name} options={t.options} />)}

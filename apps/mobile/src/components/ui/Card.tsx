@@ -19,6 +19,7 @@ export function Card({ children, onPress, elevated = true, tone = 'default', pad
     { padding },
     tone === 'tinted' && { backgroundColor: colors.primaryLight, borderColor: colors.primaryLight },
     tone === 'dark' && { backgroundColor: colors.ink, borderColor: colors.ink },
+    tone === 'default' && { borderColor: 'rgba(16,38,26,0.06)' },
     elevated && tone === 'default' ? shadow.card : null,
     style,
   ];

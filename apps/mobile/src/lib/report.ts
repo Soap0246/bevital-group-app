@@ -25,10 +25,10 @@ export function buildProgressReportHtml(patientName: string, data: RecoveryData)
     .map((p) => `<h3>${esc(p.title)} <small>(${esc(p.status)}, ${p.frequency_per_week}×/week)</small></h3><ul>${p.items.map((i) => `<li>${esc(i.name)}${i.sets && i.reps ? ` — ${i.sets} × ${i.reps}` : ''}</li>`).join('')}</ul>`)
     .join('');
   return `<!doctype html><html><head><meta charset="utf-8"><style>
-    body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#17303F;padding:28px;font-size:13px}
-    h1{color:#0A5A62;margin:0 0 4px} h2{border-bottom:2px solid #E3F4F5;padding-bottom:4px;margin-top:24px;color:#0B2A3C}
-    table{width:100%;border-collapse:collapse} td,th{border-bottom:1px solid #E3EAEE;padding:6px;text-align:left}
-    small{color:#5C7280;font-weight:normal} .foot{margin-top:28px;color:#8CA0AC;font-size:11px}
+    body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1C3326;padding:28px;font-size:13px}
+    h1{color:#365B0B;margin:0 0 4px} h2{border-bottom:2px solid #EEF6DC;padding-bottom:4px;margin-top:24px;color:#10261A}
+    table{width:100%;border-collapse:collapse} td,th{border-bottom:1px solid #E3EBDD;padding:6px;text-align:left}
+    small{color:#566A5B;font-weight:normal} .foot{margin-top:28px;color:#8A9C8F;font-size:11px}
   </style></head><body>
     <h1>BeVital Recovery Report</h1>
     <div>${esc(patientName)} · generated ${esc(formatDateTime(new Date()))}</div>
@@ -56,9 +56,9 @@ export async function shareProgressReport(html: string): Promise<void> {
 /** Digital receipt for a verified payment (only generated for status = succeeded). */
 export function buildReceiptHtml(p: { receipt_number: string | null; paid_at: string | null; amount: number; method: string; provider_reference: string | null }, payer: string, description: string): string {
   return `<!doctype html><html><head><meta charset="utf-8"><style>
-    body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#17303F;padding:32px;font-size:14px}
-    h1{color:#0A5A62;margin:0} .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E3EAEE}
-    .total{font-size:20px;font-weight:700;color:#0A5A62} .foot{margin-top:28px;color:#8CA0AC;font-size:11px}
+    body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1C3326;padding:32px;font-size:14px}
+    h1{color:#365B0B;margin:0} .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E3EBDD}
+    .total{font-size:20px;font-weight:700;color:#365B0B} .foot{margin-top:28px;color:#8A9C8F;font-size:11px}
   </style></head><body>
     <h1>BeVital — Payment receipt</h1>
     <p>Receipt <b>${esc(p.receipt_number)}</b> · ${esc(p.paid_at ? formatDateTime(p.paid_at) : '')}</p>

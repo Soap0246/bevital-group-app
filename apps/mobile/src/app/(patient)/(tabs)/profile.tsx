@@ -28,7 +28,7 @@ export default function Profile() {
   };
 
   return (
-    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={34} /></View>}>
+    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>}>
       <Card style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
         <Avatar name={profile?.full_name ?? '?'} size={64} />
         <View style={{ flex: 1 }}>

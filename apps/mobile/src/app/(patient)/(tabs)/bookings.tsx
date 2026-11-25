@@ -17,7 +17,7 @@ export default function Bookings() {
     .sort((a, b) => (tab === 'past' ? +new Date(b.scheduled_start) - +new Date(a.scheduled_start) : +new Date(a.scheduled_start) - +new Date(b.scheduled_start)));
 
   return (
-    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={34} /></View>} refreshing={bookings.isRefetching} onRefresh={() => void bookings.refetch()}>
+    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>} refreshing={bookings.isRefetching} onRefresh={() => void bookings.refetch()}>
       <Text variant="title" style={{ marginTop: 12, marginBottom: 12 }}>My bookings</Text>
       <Segmented value={tab} onChange={setTab} options={[{ value: 'upcoming', label: 'Upcoming' }, { value: 'past', label: 'Past' }]} />
       <View style={{ gap: 12, marginTop: 16 }}>

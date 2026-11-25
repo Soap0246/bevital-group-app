@@ -102,7 +102,7 @@ export default function Recovery() {
   );
 
   return (
-    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={34} /></View>} refreshing={recovery.isRefetching} onRefresh={() => void recovery.refetch()}>
+    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>} refreshing={recovery.isRefetching} onRefresh={() => void recovery.refetch()}>
       <Text variant="title" style={{ marginTop: 12 }}>My Recovery Journey</Text>
       {(family.data ?? []).length > 0 ? (
         <View style={{ marginTop: 12 }}>

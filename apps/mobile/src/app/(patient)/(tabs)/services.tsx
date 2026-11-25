@@ -31,7 +31,7 @@ export default function Services() {
 
   return (
     <Screen
-      header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={34} /></View>}
+      header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>}
       refreshing={services.isRefetching}
       onRefresh={() => { void services.refetch(); void categories.refetch(); }}
     >

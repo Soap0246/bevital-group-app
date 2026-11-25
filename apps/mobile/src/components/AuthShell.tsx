@@ -7,7 +7,7 @@ export function AuthShell({ title, subtitle, children, back = false }: { title: 
   return (
     <Screen back={back} title={back ? '' : undefined}>
       <View style={{ alignItems: 'center', marginTop: back ? 0 : 16, marginBottom: 24 }}>
-        <Logo variant="main" height={56} />
+        <Logo variant="main" height={120} />
       </View>
       <View style={{ gap: 6, marginBottom: 24 }}>
         <Text variant="title" accessibilityRole="header">{title}</Text>

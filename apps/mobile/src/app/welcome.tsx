@@ -32,7 +32,7 @@ export default function Welcome() {
   return (
     <SafeAreaView style={styles.root}>
       <Animated.View entering={FadeInDown.duration(500)} style={styles.logo}>
-        <Logo variant="main" height={52} />
+        <Logo variant="main" height={124} />
       </Animated.View>
 
       <FlatList
