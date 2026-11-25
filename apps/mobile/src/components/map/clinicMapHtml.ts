@@ -11,7 +11,7 @@ export interface ClinicMapProps {
 /**
  * Self-contained Leaflet + OpenStreetMap page. It is loaded in a WebView on phones and an <iframe> on
  * web, so one implementation serves every platform. Map tiles © OpenStreetMap contributors (attribution
- * is shown on the map). OSM's public tile server is fine for testing; use a commercial tile provider
+ * is shown on the map). CARTO's free basemap (OSM data) is fine for testing and OSM's own public tile server blocks hosted apps; use a commercial tile provider
  * (or your own) for production traffic.
  *
  * Protocol: the page posts {type:'select', id} when a marker is tapped, and accepts {type:'focus', id}.
@@ -50,7 +50,7 @@ html,body,#map{height:100%;margin:0;font-family:-apple-system,Segoe UI,Roboto,sa
 (function(){
 var CFG=${json};
 var map=L.map('map',{zoomControl:true,attributionControl:true}).setView([3.139,101.6869],11);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
 function post(o){var s=JSON.stringify(o);if(window.ReactNativeWebView){window.ReactNativeWebView.postMessage(s);}else if(window.parent!==window){window.parent.postMessage(s,'*');}}
 function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function icon(on){return L.divIcon({className:'',html:'<div class="pin'+(on?' on':'')+'"><i></i></div>',iconSize:on?[42,42]:[34,34],iconAnchor:on?[21,42]:[17,34],popupAnchor:[0,on?-40:-32]});}

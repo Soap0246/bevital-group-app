@@ -50,7 +50,7 @@ export default function Clinics() {
                 </Card>
               );
             })}
-            <Text variant="caption" color="textSubtle" align="center">Map data © OpenStreetMap contributors</Text>
+            <Text variant="caption" color="textSubtle" align="center">Map data © OpenStreetMap contributors © CARTO</Text>
           </>
         )}
       </View>
