@@ -1,25 +1,52 @@
 import React, { useMemo, useState } from 'react';
 import { Pressable, Switch, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { APPOINTMENT_TYPE_LABELS, formatDate, formatDistance, formatDuration, formatMYR, formatTime, friendlyError } from '@bevital/shared';
+import { APPOINTMENT_TYPE_LABELS, formatDate, formatDistance, formatDuration, formatMYR, formatTime, friendlyError, type PaymentMethod } from '@bevital/shared';
 import { useCreateBooking, useQuote } from '@/api/bookings';
 import { usePublicSettings, useTherapist } from '@/api/catalog';
 import { useMyPackages } from '@/api/profile';
 import { BookStep } from '@/components/domain/BookStep';
 import { PriceBreakdown } from '@/components/domain/booking';
-import { Banner, Button, Card, Icon, Input, LoadingList, Row, Text, useToast } from '@/components/ui';
+import { Banner, Chip, ChipRow, Icon, Input, Skeleton, Text, useToast, type IconName } from '@/components/ui';
 import { useBookingDraft } from '@/lib/bookingDraft';
-import { colors } from '@/theme';
+import { colors, radius } from '@/theme';
 
-/** Steps 6–7 — price breakdown, promo/package, consent, then create the booking (server re-prices it). */
-export default function ReviewBooking() {
+const METHODS: Array<{ id: PaymentMethod; label: string; icon: IconName }> = [
+  { id: 'fpx', label: 'FPX', icon: 'business-outline' },
+  { id: 'duitnow_qr', label: 'DuitNow QR', icon: 'qr-code-outline' },
+  { id: 'credit_card', label: 'Card', icon: 'card-outline' },
+];
+
+function SummaryRow({ icon, label, title, subtitle, onEdit, last }: { icon: IconName; label: string; title: string; subtitle?: string; onEdit: () => void; last?: boolean }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderBottomWidth: last ? 0 : 1, borderBottomColor: colors.border }}>
+      <View style={{ width: 36, height: 36, borderRadius: radius.sm, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name={icon} size={18} color="primary" />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text variant="label" color="textMuted">{label.toUpperCase()}</Text>
+        <Text variant="bodyStrong" numberOfLines={2}>{title}</Text>
+        {subtitle ? <Text variant="caption" color="textMuted" numberOfLines={2}>{subtitle}</Text> : null}
+      </View>
+      <Pressable accessibilityRole="button" accessibilityLabel={`Edit ${label}`} onPress={onEdit} hitSlop={6} style={{ minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' }}>
+        <Text variant="bodyStrong" color="primary">Edit</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+/** Step 4 — summary with Edit links, price, consent and payment method; "Pay" creates the booking (server re-prices it) and opens checkout. */
+export default function ReviewAndPay() {
   const router = useRouter();
   const toast = useToast();
   const { draft, update } = useBookingDraft();
   const settings = usePublicSettings();
   const packages = useMyPackages();
   const create = useCreateBooking();
+  const [promoOpen, setPromoOpen] = useState(!!draft.promoCode);
   const [promoInput, setPromoInput] = useState(draft.promoCode);
+  const [notesOpen, setNotesOpen] = useState(false);
+  const [method, setMethod] = useState<PaymentMethod>('fpx');
   const { service, type, startAt } = draft;
 
   const quoteInput = useMemo(
@@ -39,8 +66,10 @@ export default function ReviewBooking() {
 
   if (!service || !type || !startAt) { router.replace('/book'); return null; }
   const freeHours = Number(settings.data?.free_cancellation_hours ?? 24);
+  const total = quote.data ? Number(quote.data.total_amount) : null;
+  const free = total === 0;
 
-  const confirm = async () => {
+  const pay = async () => {
     if (!quote.data) return;
     try {
       const booking = await create.mutateAsync({
@@ -50,39 +79,28 @@ export default function ReviewBooking() {
         shareRecords: draft.shareRecords, expectedTotal: Number(quote.data.total_amount),
       });
       update({ bookingId: booking.id });
-      router.replace(Number(booking.total_amount) > 0 ? '/book/payment' : '/book/confirmation');
+      if (Number(booking.total_amount) > 0) router.replace({ pathname: '/book/payment', params: { bookingId: booking.id, method, auto: '1' } });
+      else router.replace('/book/confirmation');
     } catch (e) {
-      const msg = friendlyError(e);
-      toast.show(msg, 'error');
+      toast.show(friendlyError(e), 'error');
       if (/BV_PRICE_CHANGED/.test((e as Error).message)) void quote.refetch();
       if (/BV_SLOT_UNAVAILABLE|BV_PATIENT_OVERLAP/.test((e as Error).message)) router.replace('/book/time');
     }
   };
 
+  const physio = draft.therapist ? draft.therapist.name : matched.data ? `${matched.data.profile.display_name}` : 'Best available physio';
+  const physioSub = draft.therapist ? 'Your choice' : 'Matched automatically';
+
   return (
-    <BookStep step={6} title="Review & confirm" footer={
-      <Button
-        label={quote.data && Number(quote.data.total_amount) === 0 ? 'Confirm booking' : 'Confirm & continue to payment'}
-        iconRight="arrow-forward"
-        loading={create.isPending}
-        disabled={!quote.data}
-        onPress={confirm}
-      />
-    }>
-      <Card>
-        <View style={{ gap: 10 }}>
-          <Text variant="heading">{service.name}</Text>
-          <Row icon="calendar-outline" title={`${formatDate(startAt)}`} subtitle={`${formatTime(startAt)} · ${formatDuration(service.duration_minutes)}`} />
-          <Row icon={type === 'home' ? 'home-outline' : 'business-outline'} title={APPOINTMENT_TYPE_LABELS[type]} subtitle={type === 'home' ? [draft.address?.line1, draft.address?.city].filter(Boolean).join(', ') : draft.clinicName ?? undefined} />
-          <Row
-            icon="person-outline"
-            title={draft.therapist ? draft.therapist.name : 'Automatic matching'}
-            subtitle={draft.therapist ? 'Your chosen physiotherapist' : matched.data ? `Best match right now: ${matched.data.profile.display_name}` : 'Best available physiotherapist'}
-            last={!draft.familyMemberId}
-          />
-          {draft.familyMemberId ? <Row icon="people-outline" title={`For ${draft.familyMemberName}`} subtitle="Booked on their behalf" last /> : null}
-        </View>
-      </Card>
+    <BookStep step={4} title="Review and pay" price={total} priceLabel="Total" cta={free ? 'Confirm booking' : total != null ? `Pay ${formatMYR(total)}` : 'Pay'}
+      onNext={pay} nextDisabled={!quote.data} loading={create.isPending}
+      note={free ? undefined : 'Your slot is held while you complete payment.'}>
+      <View style={{ paddingHorizontal: 16, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface }}>
+        <SummaryRow icon="medkit-outline" label={draft.familyMemberId ? `For ${draft.familyMemberName}` : 'Service'} title={service.name} subtitle={`${APPOINTMENT_TYPE_LABELS[type]} · ${formatDuration(service.duration_minutes)}`} onEdit={() => router.push('/book')} />
+        <SummaryRow icon="calendar-outline" label="When" title={`${formatDate(startAt)}, ${formatTime(startAt)}`}
+          subtitle={type === 'home' ? [draft.address?.line1, draft.address?.city].filter(Boolean).join(', ') : draft.clinicName ?? undefined} onEdit={() => router.push('/book/time')} />
+        <SummaryRow icon="person-outline" label="Your physio" title={physio} subtitle={physioSub} onEdit={() => router.push('/book/therapist')} last />
+      </View>
 
       {usablePackages.length > 0 ? (
         <View style={{ gap: 8 }}>
@@ -90,63 +108,84 @@ export default function ReviewBooking() {
           {usablePackages.map((p) => {
             const on = draft.packagePurchaseId === p.id;
             return (
-              <Card key={p.id} onPress={() => update({ packagePurchaseId: on ? null : p.id, promoCode: '' })} style={on ? { borderColor: colors.primary, borderWidth: 2 } : undefined}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <Icon name="ticket-outline" size={24} color="primary" />
-                  <View style={{ flex: 1 }}>
-                    <Text variant="bodyStrong">{p.package?.name ?? 'Package'}</Text>
-                    <Text variant="caption" color="textMuted">{p.sessions_remaining} of {p.sessions_total} sessions left</Text>
-                  </View>
-                  {on ? <Icon name="checkmark-circle" size={24} color="primary" /> : null}
+              <Pressable key={p.id} accessibilityRole="checkbox" accessibilityState={{ checked: on }} onPress={() => update({ packagePurchaseId: on ? null : p.id, promoCode: '' })}
+                style={{ minHeight: 56, padding: 12, flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: radius.md, borderWidth: on ? 2 : 1, borderColor: on ? colors.primary : colors.border, backgroundColor: colors.surface }}>
+                <Icon name="ticket-outline" size={22} color="primary" />
+                <View style={{ flex: 1 }}>
+                  <Text variant="bodyStrong">{p.package?.name ?? 'Package'}</Text>
+                  <Text variant="caption" color="textMuted">{p.sessions_remaining} of {p.sessions_total} sessions left</Text>
                 </View>
-              </Card>
+                {on ? <Icon name="checkmark-circle" size={22} color="primary" /> : null}
+              </Pressable>
             );
           })}
         </View>
       ) : null}
 
-      {!draft.packagePurchaseId ? (
-        <View style={{ gap: 8 }}>
-          <Text variant="subheading">Promo code</Text>
-          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
-            <View style={{ flex: 1 }}><Input value={promoInput} onChangeText={(t) => setPromoInput(t.toUpperCase())} autoCapitalize="characters" placeholder="Enter code" icon="pricetag-outline" /></View>
-            <Button label="Apply" variant="secondary" fullWidth={false} size="md" onPress={() => update({ promoCode: promoInput.trim() })} style={{ marginTop: 2 }} />
-          </View>
-          {quote.data?.promo_error && draft.promoCode ? <Text variant="caption" color="danger">{quote.data.promo_error}</Text> : null}
-          {quote.data && Number(quote.data.discount_amount) > 0 && draft.promoCode ? <Text variant="caption" color="success">Code applied: you save {formatMYR(quote.data.discount_amount)}</Text> : null}
-        </View>
-      ) : null}
-
-      <Card>
-        <Text variant="heading" style={{ marginBottom: 12 }}>Price</Text>
-        {quote.isLoading ? <LoadingList count={1} /> : quote.isError ? (
+      <View style={{ padding: 16, gap: 12, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface }}>
+        <Text variant="heading">Price</Text>
+        {quote.isLoading ? <View style={{ gap: 10 }}><Skeleton height={20} /><Skeleton height={20} /><Skeleton height={24} /></View> : quote.isError ? (
           <Banner tone="danger" icon="alert-circle" title="Couldn't price this booking" body={friendlyError(quote.error)} />
         ) : quote.data ? (
           <>
             <PriceBreakdown quote={quote.data} type={type} packageApplied={!!quote.data.package_purchase_id} />
             {type === 'home' && quote.data.travel_distance_km != null ? (
-              <Text variant="caption" color="textSubtle" style={{ marginTop: 10 }}>Travel fee uses an estimated road distance of {formatDistance(Number(quote.data.travel_distance_km))} from your physiotherapist's base.</Text>
+              <Text variant="caption" color="textSubtle">Travel fee uses an estimated road distance of {formatDistance(Number(quote.data.travel_distance_km))}.</Text>
             ) : null}
           </>
         ) : null}
-      </Card>
+        {!draft.packagePurchaseId ? (
+          promoOpen ? (
+            <View style={{ gap: 6 }}>
+              <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
+                <View style={{ flex: 1 }}><Input value={promoInput} onChangeText={(t) => setPromoInput(t.toUpperCase())} autoCapitalize="characters" placeholder="Promo code" icon="pricetag-outline" /></View>
+                <Pressable accessibilityRole="button" accessibilityLabel="Apply promo code" onPress={() => update({ promoCode: promoInput.trim() })} style={{ minHeight: 52, paddingHorizontal: 8, justifyContent: 'center' }}>
+                  <Text variant="bodyStrong" color="primary">Apply</Text>
+                </Pressable>
+              </View>
+              {quote.data?.promo_error && draft.promoCode ? <Text variant="caption" color="danger">{quote.data.promo_error}</Text> : null}
+              {quote.data && Number(quote.data.discount_amount) > 0 && draft.promoCode ? <Text variant="caption" color="success">Code applied. You save {formatMYR(quote.data.discount_amount)}.</Text> : null}
+            </View>
+          ) : (
+            <Pressable accessibilityRole="button" onPress={() => setPromoOpen(true)} style={{ minHeight: 44, justifyContent: 'center' }}>
+              <Text variant="bodyStrong" color="primary">Have a promo code?</Text>
+            </Pressable>
+          )
+        ) : null}
+      </View>
 
-      <Input label="Describe your symptoms (optional)" multiline value={draft.symptoms} onChangeText={(t) => update({ symptoms: t })} placeholder="e.g. lower back pain for 3 weeks, worse when sitting" />
-      <Input label="Notes for your physiotherapist (optional)" multiline value={draft.notes} onChangeText={(t) => update({ notes: t })} placeholder="Anything we should know — access instructions, preferences…" />
-
-      <Card tone="tinted">
-        <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
-          <Switch value={draft.shareRecords} onValueChange={(v) => update({ shareRecords: v })} trackColor={{ true: colors.primary, false: colors.borderStrong }} thumbColor={colors.surface} accessibilityLabel="Share my health profile with my physiotherapist" />
-          <View style={{ flex: 1, gap: 4 }}>
-            <Text variant="bodyStrong">Share my health profile</Text>
-            <Text variant="caption" color="inkSoft">Lets your physiotherapist for this appointment read your medical history, conditions and allergies. Every access is logged. You can withdraw this any time from the booking page.</Text>
-          </View>
+      <View style={{ padding: 16, flexDirection: 'row', gap: 12, alignItems: 'flex-start', borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface }}>
+        <View style={{ flex: 1, gap: 2 }}>
+          <Text variant="bodyStrong">Share my health profile</Text>
+          <Text variant="caption" color="textMuted">Lets your physio read your history for this visit. Every access is logged and you can turn it off any time.</Text>
         </View>
-      </Card>
+        <Switch value={draft.shareRecords} onValueChange={(v) => update({ shareRecords: v })} trackColor={{ true: colors.primary, false: colors.borderStrong }} thumbColor={colors.surface} accessibilityLabel="Share my health profile with my physiotherapist" />
+      </View>
 
-      <Pressable onPress={() => undefined}>
-        <Text variant="caption" color="textMuted">Free cancellation up to {freeHours} hours before your appointment. Later cancellations may be charged according to BeVital's policy.</Text>
+      {!free ? (
+        <View style={{ gap: 10 }}>
+          <Text variant="subheading">Pay with</Text>
+          <ChipRow>
+            {METHODS.map((m) => <Chip key={m.id} label={m.label} icon={m.icon} selected={method === m.id} onPress={() => setMethod(m.id)} />)}
+          </ChipRow>
+        </View>
+      ) : null}
+
+      <Pressable accessibilityRole="button" onPress={() => setNotesOpen((v) => !v)} style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <Icon name={notesOpen ? 'chevron-down' : 'chevron-forward'} size={18} color="primary" />
+        <Text variant="bodyStrong" color="primary">Add notes for your physio (optional)</Text>
       </Pressable>
+      {notesOpen ? (
+        <View style={{ gap: 12 }}>
+          <Input label="Symptoms" multiline value={draft.symptoms} onChangeText={(t) => update({ symptoms: t })} placeholder="e.g. lower back pain for 3 weeks, worse when sitting" />
+          <Input label="Notes" multiline value={draft.notes} onChangeText={(t) => update({ notes: t })} placeholder="Access instructions, preferences…" />
+        </View>
+      ) : null}
+
+      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
+        <Icon name="shield-checkmark-outline" size={16} color="success" />
+        <Text variant="caption" color="textMuted" style={{ flex: 1 }}>Free cancellation up to {freeHours} hours before your visit. Later cancellations may be charged under BeVital's policy.</Text>
+      </View>
     </BookStep>
   );
 }

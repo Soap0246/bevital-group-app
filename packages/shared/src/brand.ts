@@ -16,25 +16,25 @@ export const BRAND = {
 
 export const COLORS = {
   // Brand greens (sampled from the official logos: #94C01C stacked emblem, #8CC440 lock-up)
-  lime: '#8CC440',
-  limeLight: '#F3F9E6',
+  lime: '#8CC63F',
+  limeLight: '#F1F8E3',
   // Primary action colour: a deeper green so white text passes WCAG AA (5.1:1). The logo lime
   // itself is too light for text/buttons on white, so it is used for accents and highlights.
-  primary: '#4C7A12',
-  primaryDark: '#365B0B',
-  primaryLight: '#EEF6DC',
+  primary: '#3B6D11',
+  primaryDark: '#2C5209',
+  primaryLight: '#E9F3D6',
   primaryMuted: '#A9D26B',
   // Deep forest ink for headings and dark surfaces
-  ink: '#10261A',
-  inkSoft: '#2F4A38',
+  ink: '#1C2A12',
+  inkSoft: '#3A4A2C',
   // Neutrals (warm-green tinted)
-  text: '#1C3326',
-  textMuted: '#566A5B',
-  textSubtle: '#8A9C8F',
-  border: '#E3EBDD',
-  borderStrong: '#C9D6C0',
+  text: '#1C2A12',
+  textMuted: '#55624B',
+  textSubtle: '#6B7860',
+  border: '#DDE6CF',
+  borderStrong: '#C3D1AE',
   surface: '#FFFFFF',
-  surfaceAlt: '#F5F9F0',
+  surfaceAlt: '#F5F8EE',
   background: '#FFFFFF',
   // Warm accent for promotions / highlights
   accent: '#F2A33A',

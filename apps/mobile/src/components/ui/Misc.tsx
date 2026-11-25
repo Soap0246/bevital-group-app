@@ -59,7 +59,7 @@ export function Avatar({ name, uri, size = 48 }: { name: string; uri?: string | 
 }
 
 export function Rating({ value, count, size = 14 }: { value: number; count?: number; size?: number }) {
-  if (!count) return <Text variant="caption" color="textMuted">New</Text>;
+  if (!count) return null;
   return (
     <View style={styles.rating} accessible accessibilityLabel={`Rated ${value.toFixed(1)} out of 5 from ${count} reviews`}>
       <Icon name="star" size={size} color="accent" />
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   chipOn: { backgroundColor: colors.primary, borderColor: colors.primary },
   segmented: { flexDirection: 'row', backgroundColor: colors.primaryLight, borderRadius: radius.md, padding: 4, gap: 4 },
   segment: { flex: 1, flexDirection: 'row', gap: 6, minHeight: 46, alignItems: 'center', justifyContent: 'center', borderRadius: radius.sm },
-  segmentOn: { backgroundColor: colors.surface, shadowColor: '#10261A', shadowOpacity: 0.08, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  segmentOn: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
   search: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: TOUCH_TARGET, paddingHorizontal: 16, borderRadius: radius.pill, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
   searchInput: { flex: 1, fontFamily: fontFamily.regular, fontSize: 16, color: colors.text, paddingVertical: 10 },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 28, marginBottom: 12 },

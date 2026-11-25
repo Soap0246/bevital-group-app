@@ -8,28 +8,32 @@ import { colors, fontFamily, radius } from '@/theme';
 import { Icon, Text } from '@/components/ui';
 
 // ───────────────────────── Date strip ─────────────────────────
-export function DateStrip({ value, onChange, days = 21 }: { value: string; onChange: (ymd: string) => void; days?: number }) {
+/** `soldOut` days (checked against real availability) are greyed out and cannot be picked. */
+export function DateStrip({ value, onChange, days = 14, soldOut }: { value: string; onChange: (ymd: string) => void; days?: number; soldOut?: Set<string> }) {
   const today = toKlDateString();
   const list = Array.from({ length: days }, (_, i) => addDaysToDateString(today, i));
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingHorizontal: 20 }} style={{ marginHorizontal: -20 }}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 20 }} style={{ marginHorizontal: -20 }}>
       {list.map((ymd) => {
         const on = ymd === value;
+        const out = !!soldOut?.has(ymd);
         const d = new Date(`${ymd}T12:00:00+08:00`);
         const day = Number(ymd.slice(8));
         const month = new Intl.DateTimeFormat('en-MY', { timeZone: 'Asia/Kuala_Lumpur', month: 'short' }).format(d);
+        const full = new Intl.DateTimeFormat('en-MY', { timeZone: 'Asia/Kuala_Lumpur', dateStyle: 'full' }).format(d);
         return (
           <Pressable
             key={ymd}
             accessibilityRole="button"
-            accessibilityState={{ selected: on }}
-            accessibilityLabel={new Intl.DateTimeFormat('en-MY', { timeZone: 'Asia/Kuala_Lumpur', dateStyle: 'full' }).format(d)}
+            accessibilityState={{ selected: on, disabled: out }}
+            accessibilityLabel={out ? `${full}, fully booked` : full}
+            disabled={out}
             onPress={() => onChange(ymd)}
-            style={[styles.dateItem, on && styles.dateItemOn]}
+            style={[styles.dateItem, on && styles.dateItemOn, out && styles.dateItemOut]}
           >
-            <Text variant="label" color={on ? 'surface' : 'textMuted'}>{formatWeekdayShort(d).toUpperCase()}</Text>
-            <Text variant="title" color={on ? 'surface' : 'ink'}>{day}</Text>
-            <Text variant="caption" color={on ? 'surface' : 'textMuted'}>{month}</Text>
+            <Text variant="label" color={on ? 'surface' : out ? 'textSubtle' : 'textMuted'}>{formatWeekdayShort(d).toUpperCase()}</Text>
+            <Text variant="heading" color={on ? 'surface' : out ? 'textSubtle' : 'ink'}>{day}</Text>
+            <Text variant="label" color={on ? 'surface' : 'textSubtle'}>{out ? 'Full' : month}</Text>
           </Pressable>
         );
       })}
@@ -38,22 +42,53 @@ export function DateStrip({ value, onChange, days = 21 }: { value: string; onCha
 }
 
 // ───────────────────────── Time grid ─────────────────────────
+const klHour = (iso: string) => Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', hour: '2-digit', hour12: false }).format(new Date(iso)));
+const PERIODS = [
+  { key: 'morning', label: 'Morning', icon: 'sunny-outline' as const, test: (h: number) => h < 12 },
+  { key: 'afternoon', label: 'Afternoon', icon: 'partly-sunny-outline' as const, test: (h: number) => h >= 12 && h < 17 },
+  { key: 'evening', label: 'Evening', icon: 'moon-outline' as const, test: (h: number) => h >= 17 },
+];
+const VISIBLE_PER_PERIOD = 8;
+
+/** Times grouped Morning / Afternoon / Evening in a 4-column grid, with "More" past two rows. */
 export function TimeGrid({ slots, value, onChange }: { slots: AvailableTime[]; value: string | null; onChange: (startIso: string) => void }) {
+  const [expanded, setExpanded] = React.useState<Record<string, boolean>>({});
   return (
-    <View style={styles.grid}>
-      {slots.map((s) => {
-        const on = value != null && new Date(value).getTime() === new Date(s.start_at).getTime();
+    <View style={{ gap: 18 }}>
+      {PERIODS.map((p) => {
+        const list = slots.filter((s) => p.test(klHour(s.start_at)));
+        if (list.length === 0) return null;
+        const open = expanded[p.key] || list.length <= VISIBLE_PER_PERIOD;
+        const shown = open ? list : list.slice(0, VISIBLE_PER_PERIOD - 1);
         return (
-          <Pressable
-            key={s.start_at}
-            accessibilityRole="button"
-            accessibilityState={{ selected: on }}
-            accessibilityLabel={`${formatTime(s.start_at)}, ${s.therapist_count} physiotherapist${s.therapist_count > 1 ? 's' : ''} available`}
-            onPress={() => onChange(new Date(s.start_at).toISOString())}
-            style={[styles.slot, on && styles.slotOn]}
-          >
-            <Text variant="bodyStrong" color={on ? 'surface' : 'ink'}>{formatTime(s.start_at)}</Text>
-          </Pressable>
+          <View key={p.key} style={{ gap: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Icon name={p.icon} size={16} color="textMuted" />
+              <Text variant="label" color="textMuted">{p.label.toUpperCase()}</Text>
+            </View>
+            <View style={styles.grid}>
+              {shown.map((s) => {
+                const on = value != null && new Date(value).getTime() === new Date(s.start_at).getTime();
+                return (
+                  <Pressable
+                    key={s.start_at}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: on }}
+                    accessibilityLabel={`${formatTime(s.start_at)}, ${s.therapist_count} physiotherapist${s.therapist_count > 1 ? 's' : ''} available`}
+                    onPress={() => onChange(new Date(s.start_at).toISOString())}
+                    style={[styles.slot, on && styles.slotOn]}
+                  >
+                    <Text variant="bodyStrong" color={on ? 'surface' : 'ink'} numberOfLines={1} style={{ fontSize: 13 }}>{formatTime(s.start_at)}</Text>
+                  </Pressable>
+                );
+              })}
+              {!open ? (
+                <Pressable accessibilityRole="button" accessibilityLabel={`Show ${list.length - shown.length} more ${p.label.toLowerCase()} times`} onPress={() => setExpanded((e) => ({ ...e, [p.key]: true }))} style={[styles.slot, styles.slotMore]}>
+                  <Text variant="bodyStrong" color="primary" style={{ fontSize: 13 }}>More</Text>
+                </Pressable>
+              ) : null}
+            </View>
+          </View>
         );
       })}
     </View>
@@ -148,11 +183,13 @@ export function StatusTimeline({ status, type, history }: { status: BookingStatu
 }
 
 const styles = StyleSheet.create({
-  dateItem: { width: 68, paddingVertical: 12, alignItems: 'center', borderRadius: radius.lg, backgroundColor: colors.surfaceAlt, borderWidth: 1, borderColor: colors.border },
+  dateItem: { width: 60, minHeight: 76, paddingVertical: 10, alignItems: 'center', justifyContent: 'center', borderRadius: radius.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
   dateItemOn: { backgroundColor: colors.primary, borderColor: colors.primary },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  slot: { minWidth: 104, minHeight: 50, paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center', borderRadius: radius.md, backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderStrong },
+  dateItemOut: { backgroundColor: colors.surfaceAlt, borderColor: colors.border, opacity: 0.7 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  slot: { width: '23.2%', minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: radius.sm, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderStrong },
   slotOn: { backgroundColor: colors.primary, borderColor: colors.primary },
+  slotMore: { borderColor: colors.primaryMuted, backgroundColor: colors.primaryLight },
   line: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   sep: { height: 1, backgroundColor: colors.border, marginVertical: 2 },
   tlRow: { flexDirection: 'row', gap: 14 },

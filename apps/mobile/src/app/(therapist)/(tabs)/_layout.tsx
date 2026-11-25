@@ -8,7 +8,7 @@ const tab = (name: string, title: string, icon: IconName, iconOn: IconName) => (
   name,
   options: {
     title,
-    tabBarIcon: ({ focused }: { focused: boolean }) => <Icon name={focused ? iconOn : icon} size={26} color={focused ? 'primary' : 'textMuted'} />,
+    tabBarIcon: ({ focused }: { focused: boolean }) => <Icon name={focused ? iconOn : icon} size={24} color={focused ? 'primary' : 'textMuted'} />,
     tabBarAccessibilityLabel: `${title} tab`,
   },
 });
@@ -29,8 +29,8 @@ export default function TherapistTabs() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: { fontFamily: fontFamily.semibold, fontSize: 11.5, marginTop: 2 },
-        tabBarStyle: { height: 74 + insets.bottom, paddingTop: 10, paddingBottom: Math.max(insets.bottom, 14), borderTopWidth: 0, backgroundColor: colors.surface, borderTopLeftRadius: 26, borderTopRightRadius: 26, shadowColor: '#10261A', shadowOpacity: 0.1, shadowRadius: 18, shadowOffset: { width: 0, height: -6 }, elevation: 14 },
+        tabBarLabelStyle: { fontFamily: fontFamily.semibold, fontSize: 12, lineHeight: 16, marginTop: 2 },
+        tabBarStyle: { height: 60 + Math.max(insets.bottom, 10), paddingTop: 8, paddingBottom: Math.max(insets.bottom, 10), borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.surface },
       }}
     >
       {tabs.map((t) => <Tabs.Screen key={t.name} name={t.name} options={t.options} />)}

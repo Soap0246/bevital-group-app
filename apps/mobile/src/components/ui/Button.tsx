@@ -1,8 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { LinearGradient } from 'expo-linear-gradient';
-import { colors, radius, shadow, TOUCH_TARGET } from '@/theme';
+import { colors, radius, TOUCH_TARGET } from '@/theme';
 import { Text } from './Text';
 import { Icon, type IconName } from './Icon';
 
@@ -26,7 +25,7 @@ export interface ButtonProps {
 const palette: Record<Variant, { bg: string; fg: 'surface' | 'primaryDark' | 'primary' | 'danger' | 'text' | 'ink'; border?: string }> = {
   primary: { bg: colors.primary, fg: 'surface' },
   secondary: { bg: colors.primaryLight, fg: 'primaryDark' },
-  outline: { bg: 'transparent', fg: 'primary', border: colors.primary },
+  outline: { bg: colors.surface, fg: 'ink', border: colors.borderStrong },
   ghost: { bg: 'transparent', fg: 'primary' },
   danger: { bg: colors.dangerLight, fg: 'danger' },
   lime: { bg: colors.lime, fg: 'ink' },
@@ -52,27 +51,23 @@ export function Button({
       style={({ pressed }) => [
         styles.base,
         {
-          minHeight: size === 'lg' ? TOUCH_TARGET + 4 : TOUCH_TARGET - 6,
+          minHeight: size === 'lg' ? TOUCH_TARGET + 4 : 44,
           backgroundColor: p.bg,
           borderColor: p.border ?? 'transparent',
           opacity: inactive ? 0.55 : 1,
           transform: [{ scale: pressed ? 0.98 : 1 }],
           alignSelf: fullWidth ? 'stretch' : 'flex-start',
         },
-        (variant === 'primary' || variant === 'lime') && !inactive ? shadow.card : null,
         style,
       ]}
     >
-      {variant === 'primary' && !inactive ? (
-        <LinearGradient colors={['#5E9419', colors.primary, colors.primaryDark]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]} />
-      ) : null}
       {loading ? (
         <ActivityIndicator color={colors[p.fg]} />
       ) : (
         <View style={styles.row}>
-          {icon ? <Icon name={icon} size={20} color={p.fg} /> : null}
+          {icon ? <Icon name={icon} size={18} color={p.fg} /> : null}
           <Text variant="button" color={p.fg}>{label}</Text>
-          {iconRight ? <Icon name={iconRight} size={20} color={p.fg} /> : null}
+          {iconRight ? <Icon name={iconRight} size={18} color={p.fg} /> : null}
         </View>
       )}
     </Pressable>

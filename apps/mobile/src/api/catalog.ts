@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import type {
   AppointmentType, AvailabilityRow, AvailableTherapist, AvailableTime, ClinicRow, EducationArticleRow,
   PromotionRow, ReviewRow, ServiceCategoryRow, ServiceRow, TherapistProfileRow,
@@ -146,6 +146,43 @@ export function useAvailableTimes(q: SlotQuery | null) {
         p_service_id: q!.serviceId, p_type: q!.type, p_date: q!.date,
         p_clinic_id: q!.clinicId ?? null, p_lat: q!.lat ?? null, p_lng: q!.lng ?? null,
       })) as AvailableTime[],
+  });
+}
+
+/** Looks ahead `dates.length` days so the date strip can grey out fully-booked days and open on the first free one. */
+export function useAvailabilityCalendar(base: Omit<SlotQuery, 'date'> | null, dates: string[]) {
+  const results = useQueries({
+    queries: dates.map((date) => {
+      const q: SlotQuery | null = base ? { ...base, date } : null;
+      return {
+        queryKey: keys.availableTimes(q),
+        enabled: !!q,
+        staleTime: 30_000,
+        queryFn: async () =>
+          unwrap(await supabase.rpc('get_available_times', {
+            p_service_id: q!.serviceId, p_type: q!.type, p_date: q!.date,
+            p_clinic_id: q!.clinicId ?? null, p_lat: q!.lat ?? null, p_lng: q!.lng ?? null,
+          })) as AvailableTime[],
+      };
+    }),
+  });
+  return dates.map((date, i) => ({ date, loading: !!base && results[i].isPending, count: results[i].data?.length ?? 0, failed: results[i].isError }));
+}
+
+/** Registration number (admin-approved only) and completed-session count for physiotherapists. */
+export function useTherapistStats(ids: string[]) {
+  const key = [...ids].sort().join(',');
+  return useQuery({
+    queryKey: ['therapist-stats', key],
+    enabled: ids.length > 0,
+    staleTime: 5 * 60_000,
+    retry: false,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('therapist_public_stats', { p_ids: ids });
+      if (error) return {} as Record<string, { registration: string | null; sessions: number }>;
+      const rows = (data ?? []) as Array<{ therapist_id: string; registration_number: string | null; completed_sessions: number }>;
+      return Object.fromEntries(rows.map((r) => [r.therapist_id, { registration: r.registration_number, sessions: r.completed_sessions }]));
+    },
   });
 }
 

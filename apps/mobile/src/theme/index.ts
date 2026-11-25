@@ -5,10 +5,10 @@ export const colors = COLORS;
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32, huge: 40 } as const;
 
-export const radius = { sm: 12, md: 16, lg: 22, xl: 30, pill: 999 } as const;
+export const radius = { sm: 12, md: 14, lg: 16, xl: 20, pill: 999 } as const;
 
 /** Minimum touch target (elderly / limited-dexterity friendly; WCAG recommends ≥ 44). */
-export const TOUCH_TARGET = 52;
+export const TOUCH_TARGET = 48;
 
 export const fontFamily = {
   regular: 'PlusJakartaSans_400Regular',
@@ -31,27 +31,27 @@ export type TextVariant =
 
 /** Base sizes ≥ 16 for body copy. Scaled further by the "Larger text" accessibility preference. */
 export const typography: Record<TextVariant, TextStyle> = {
-  display: { fontFamily: fontFamily.extrabold, fontSize: 32, lineHeight: 40, letterSpacing: -0.5 },
-  title: { fontFamily: fontFamily.bold, fontSize: 24, lineHeight: 32, letterSpacing: -0.3 },
-  heading: { fontFamily: fontFamily.bold, fontSize: 20, lineHeight: 28 },
-  subheading: { fontFamily: fontFamily.semibold, fontSize: 17, lineHeight: 24 },
-  body: { fontFamily: fontFamily.regular, fontSize: 16, lineHeight: 24 },
-  bodyStrong: { fontFamily: fontFamily.semibold, fontSize: 16, lineHeight: 24 },
-  caption: { fontFamily: fontFamily.regular, fontSize: 14, lineHeight: 20 },
-  label: { fontFamily: fontFamily.semibold, fontSize: 13, lineHeight: 18, letterSpacing: 0.4 },
-  button: { fontFamily: fontFamily.bold, fontSize: 17, lineHeight: 22 },
+  display: { fontFamily: fontFamily.extrabold, fontSize: 26, lineHeight: 34, letterSpacing: -0.4 },
+  title: { fontFamily: fontFamily.bold, fontSize: 26, lineHeight: 34, letterSpacing: -0.4 },
+  heading: { fontFamily: fontFamily.bold, fontSize: 18, lineHeight: 26 },
+  subheading: { fontFamily: fontFamily.semibold, fontSize: 15, lineHeight: 22 },
+  body: { fontFamily: fontFamily.regular, fontSize: 15, lineHeight: 22 },
+  bodyStrong: { fontFamily: fontFamily.semibold, fontSize: 15, lineHeight: 22 },
+  caption: { fontFamily: fontFamily.regular, fontSize: 13, lineHeight: 18 },
+  label: { fontFamily: fontFamily.semibold, fontSize: 12, lineHeight: 16, letterSpacing: 0.3 },
+  button: { fontFamily: fontFamily.bold, fontSize: 15, lineHeight: 20 },
 };
 
 export const shadow = {
   card: Platform.select<ViewStyle>({
-    ios: { shadowColor: '#10261A', shadowOpacity: 0.07, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } },
-    android: { elevation: 3 },
-    default: { boxShadow: '0 6px 18px rgba(16,38,26,0.08)' } as ViewStyle,
+    ios: { shadowColor: '#1C2A12', shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
+    android: { elevation: 0 },
+    default: { boxShadow: '0 1px 2px rgba(28,42,18,0.04)' } as ViewStyle,
   }) as ViewStyle,
   float: Platform.select<ViewStyle>({
-    ios: { shadowColor: '#10261A', shadowOpacity: 0.14, shadowRadius: 24, shadowOffset: { width: 0, height: 10 } },
-    android: { elevation: 8 },
-    default: { boxShadow: '0 10px 28px rgba(16,38,26,0.16)' } as ViewStyle,
+    ios: { shadowColor: '#1C2A12', shadowOpacity: 0.08, shadowRadius: 16, shadowOffset: { width: 0, height: 4 } },
+    android: { elevation: 3 },
+    default: { boxShadow: '0 4px 16px rgba(28,42,18,0.08)' } as ViewStyle,
   }) as ViewStyle,
 };
 
