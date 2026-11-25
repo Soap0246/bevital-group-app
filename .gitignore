@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.expo/
+.next/
+dist/
+web-build/
+*.log
+.DS_Store
+coverage/
+.vercel/
+supabase/.temp/
+supabase/.branches/
+.claude/

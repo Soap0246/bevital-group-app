@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+/*
+ * Brand tokens come from @bevital/shared (COLORS) and are injected as --bv-* CSS variables on <html>
+ * by app/layout.tsx, so the mobile app and admin portal can never drift apart.
+ */
+@theme inline {
+  --color-brand: var(--bv-primary);
+  --color-brand-dark: var(--bv-primary-dark);
+  --color-brand-light: var(--bv-primary-light);
+  --color-ink: var(--bv-ink);
+  --color-ink-soft: var(--bv-ink-soft);
+  --color-text: var(--bv-text);
+  --color-muted: var(--bv-text-muted);
+  --color-subtle: var(--bv-text-subtle);
+  --color-line: var(--bv-border);
+  --color-line-strong: var(--bv-border-strong);
+  --color-surface: var(--bv-surface);
+  --color-surface-alt: var(--bv-surface-alt);
+  --color-accent: var(--bv-accent);
+  --color-success: var(--bv-success);
+  --color-success-light: var(--bv-success-light);
+  --color-warning: var(--bv-warning);
+  --color-warning-light: var(--bv-warning-light);
+  --color-danger: var(--bv-danger);
+  --color-danger-light: var(--bv-danger-light);
+  --color-info: var(--bv-info);
+  --color-info-light: var(--bv-info-light);
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--bv-surface-alt);
+  color: var(--bv-text);
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--bv-primary) 55%, white);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

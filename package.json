@@ -1,0 +1,29 @@
+{
+  "name": "bevital",
+  "private": true,
+  "version": "0.1.0",
+  "description": "BeVital - No One Left Behind. On-demand physiotherapy platform (patient + therapist mobile app, admin dashboard, Supabase backend).",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.6.0",
+    "tsx": "^4.23.15"
+  },
+  "scripts": {
+    "test": "npm run test:shared && npm run test:db",
+    "test:shared": "node --import tsx --test tests/shared/shared.test.ts",
+    "test:db": "node --test tests/db/",
+    "typecheck": "npm run typecheck -w @bevital/shared && tsc --noEmit -p apps/mobile && tsc --noEmit -p apps/admin",
+    "mobile": "npm run start -w @bevital/mobile",
+    "mobile:web": "npm run web -w @bevital/mobile",
+    "admin": "npm run dev -w @bevital/admin",
+    "admin:build": "npm run build -w @bevital/admin",
+    "db:start": "npx supabase start",
+    "db:reset": "npx supabase db reset"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "expo": {
+    "name": "BeVital",
+    "slug": "bevital",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "bevital",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "my.bevital.app",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "BeVital uses your location to find physiotherapists near you and to share your home-visit address. Your physiotherapist's location is shared with you only while they are on the way.",
+        "NSCameraUsageDescription": "BeVital uses the camera so you can take a profile photo or capture a document.",
+        "NSPhotoLibraryUsageDescription": "BeVital lets you attach photos or documents to your health profile."
+      }
+    },
+    "android": {
+      "package": "my.bevital.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION", "POST_NOTIFICATIONS"],
+      "config": {
+        "googleMaps": {
+          "apiKey": "REPLACE_WITH_GOOGLE_MAPS_ANDROID_KEY (set via EAS secret, never commit a real key)"
+        }
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/brand/logo-main.png",
+          "imageWidth": 200
+        }
+      ],
+      "expo-secure-store",
+      "expo-video",
+      "expo-sharing",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "BeVital uses your location to find physiotherapists near you and to share your address for home visits."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0E7C86"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    }
+  }
+}
