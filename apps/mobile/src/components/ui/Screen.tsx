@@ -23,10 +23,12 @@ interface ScreenProps {
   footer?: React.ReactNode;
   background?: string;
   contentStyle?: StyleProp<ViewStyle>;
+  /** let a <Hero/> reach under the status bar (the hero adds its own top inset) */
+  bleedTop?: boolean;
 }
 
 export function Screen({
-  children, title, subtitle, back, right, header, scroll = true, padded = true, refreshing, onRefresh, footer, background = colors.surfaceAlt, contentStyle,
+  children, title, subtitle, back, right, header, scroll = true, padded = true, refreshing, onRefresh, footer, background = colors.surfaceAlt, contentStyle, bleedTop,
 }: ScreenProps) {
   const router = useRouter();
   const showBack = back ?? Boolean(title);
@@ -37,7 +39,7 @@ export function Screen({
   );
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: background }]} edges={['top', 'left', 'right', 'bottom']}>
+    <SafeAreaView style={[styles.root, { backgroundColor: background }]} edges={bleedTop ? ['left', 'right', 'bottom'] : ['top', 'left', 'right', 'bottom']}>
       {header ?? (title || showBack || right ? (
         <View style={styles.header}>
           {showBack ? (

@@ -51,8 +51,8 @@ export function BookStep({ step, title, children, price, priceLabel = 'Total', c
 
 const styles = StyleSheet.create({
   track: { flexDirection: 'row', gap: 6, marginTop: 4 },
-  seg: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.border },
-  segOn: { backgroundColor: colors.primary },
+  seg: { flex: 1, height: 5, borderRadius: 3, backgroundColor: colors.border },
+  segOn: { backgroundColor: colors.lime },
   bar: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   price: { minWidth: 96 },
 });

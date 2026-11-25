@@ -29,7 +29,7 @@ export function ServiceCard({ service, category, onPress }: { service: ServiceRo
   return (
     <Card onPress={onPress} accessibilityLabel={`${service.name}, ${formatDuration(service.duration_minutes)}, from ${formatMYR(startingPrice(service))}`}>
       <View style={styles.rowTop}>
-        <View style={styles.serviceIcon}><Icon name={(category?.icon as IconName) ?? 'medkit'} size={22} color="primary" /></View>
+        <View style={styles.serviceIcon}><Icon name={(category?.icon as IconName) ?? 'medkit'} size={22} color="surface" /></View>
         <View style={{ flex: 1, gap: 2 }}>
           <Text variant="subheading" numberOfLines={2}>{service.name}</Text>
           {category ? <Text variant="caption" color="textMuted">{category.name}</Text> : null}
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   rowTop: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginTop: 12 },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  serviceIcon: { width: 46, height: 46, borderRadius: 14, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
+  serviceIcon: { width: 48, height: 48, borderRadius: 24, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
   dateBox: { width: 62, alignItems: 'center', paddingVertical: 8, borderRadius: radius.md, backgroundColor: colors.primaryLight, marginRight: 12 },
   promo: { width: 270, minHeight: 150, justifyContent: 'flex-start' },
 });

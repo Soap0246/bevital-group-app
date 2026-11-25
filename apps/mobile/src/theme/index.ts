@@ -44,14 +44,14 @@ export const typography: Record<TextVariant, TextStyle> = {
 
 export const shadow = {
   card: Platform.select<ViewStyle>({
-    ios: { shadowColor: '#1C2A12', shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
-    android: { elevation: 0 },
-    default: { boxShadow: '0 1px 2px rgba(28,42,18,0.04)' } as ViewStyle,
+    ios: { shadowColor: '#3B6D11', shadowOpacity: 0.1, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
+    android: { elevation: 3 },
+    default: { boxShadow: '0 6px 20px rgba(59,109,17,0.09), 0 1px 3px rgba(28,42,18,0.05)' } as ViewStyle,
   }) as ViewStyle,
   float: Platform.select<ViewStyle>({
     ios: { shadowColor: '#1C2A12', shadowOpacity: 0.08, shadowRadius: 16, shadowOffset: { width: 0, height: 4 } },
     android: { elevation: 3 },
-    default: { boxShadow: '0 4px 16px rgba(28,42,18,0.08)' } as ViewStyle,
+    default: { boxShadow: '0 12px 32px rgba(59,109,17,0.18)' } as ViewStyle,
   }) as ViewStyle,
 };
 

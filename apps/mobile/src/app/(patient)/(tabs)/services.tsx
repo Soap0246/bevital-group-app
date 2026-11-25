@@ -5,7 +5,7 @@ import { useArticles, useCategories, useServices } from '@/api/catalog';
 import { ServiceCard } from '@/components/domain/cards';
 import { colors } from '@/theme';
 import { ArticleCard } from '@/components/domain/cards';
-import { Chip, ChipRow, EmptyState, ErrorState, LoadingList, Logo, Row, Screen, ScrollRow, SearchBar, Segmented, Text } from '@/components/ui';
+import { Chip, ChipRow, EmptyState, ErrorState, Hero, LoadingList, Row, Screen, ScrollRow, SearchBar, Segmented, Text } from '@/components/ui';
 
 /** Marketplace: all services come from the database (categories → services). */
 export default function Services() {
@@ -34,13 +34,16 @@ export default function Services() {
 
   return (
     <Screen
-      header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>}
+      bleedTop
       refreshing={services.isRefetching}
       onRefresh={() => { void services.refetch(); void categories.refetch(); }}
     >
-      <Text variant="title" style={{ marginTop: 12, marginBottom: 12 }}>Physiotherapy services</Text>
-      <SearchBar value={q} onChangeText={setQ} placeholder="Search a condition or service" />
-      <View style={{ height: 12 }} />
+      <Hero bottom={44}>
+        <Text variant="label" style={{ color: colors.lime, letterSpacing: 1 }}>BEVITAL</Text>
+        <Text variant="title" color="surface" style={{ marginTop: 2, marginBottom: 16 }} accessibilityRole="header">Physiotherapy services</Text>
+        <SearchBar value={q} onChangeText={setQ} placeholder="Search a condition or service" />
+      </Hero>
+      <View style={{ height: 16 }} />
       <ChipRow>
         <Chip label="All" selected={cat === null} onPress={() => setCat(null)} />
         {(categories.data ?? []).map((c) => <Chip key={c.id} label={c.name.replace(' Physiotherapy', '')} selected={cat === c.id} onPress={() => setCat(c.id)} />)}

@@ -3,7 +3,8 @@ import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useMyBookings } from '@/api/bookings';
 import { AppointmentCard } from '@/components/domain/cards';
-import { EmptyState, ErrorState, LoadingList, Logo, Screen, Segmented, Text } from '@/components/ui';
+import { EmptyState, ErrorState, Hero, LoadingList, Screen, Segmented, Text } from '@/components/ui';
+import { colors, radius, shadow } from '@/theme';
 
 export default function Bookings() {
   const router = useRouter();
@@ -17,9 +18,14 @@ export default function Bookings() {
     .sort((a, b) => (tab === 'past' ? +new Date(b.scheduled_start) - +new Date(a.scheduled_start) : +new Date(a.scheduled_start) - +new Date(b.scheduled_start)));
 
   return (
-    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>} refreshing={bookings.isRefetching} onRefresh={() => void bookings.refetch()}>
-      <Text variant="title" style={{ marginTop: 12, marginBottom: 12 }}>Your visits</Text>
-      <Segmented value={tab} onChange={setTab} options={[{ value: 'upcoming', label: 'Upcoming' }, { value: 'past', label: 'Past' }]} />
+    <Screen bleedTop refreshing={bookings.isRefetching} onRefresh={() => void bookings.refetch()}>
+      <Hero bottom={52}>
+        <Text variant="label" style={{ color: colors.lime, letterSpacing: 1 }}>BEVITAL</Text>
+        <Text variant="title" color="surface" style={{ marginTop: 2 }} accessibilityRole="header">Your visits</Text>
+      </Hero>
+      <View style={[{ marginTop: -28, padding: 6, borderRadius: radius.lg, backgroundColor: colors.surface }, shadow.card]}>
+        <Segmented value={tab} onChange={setTab} options={[{ value: 'upcoming', label: 'Upcoming' }, { value: 'past', label: 'Past' }]} />
+      </View>
       <View style={{ gap: 12, marginTop: 16 }}>
         {bookings.isLoading ? <LoadingList /> : bookings.isError ? <ErrorState error={bookings.error} onRetry={() => bookings.refetch()} /> : list.length === 0 ? (
           <EmptyState icon="calendar-outline" title={tab === 'upcoming' ? 'No upcoming visits' : 'No past visits yet'}

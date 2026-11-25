@@ -5,6 +5,7 @@ export * from './Card';
 export * from './Screen';
 export * from './Input';
 export * from './Misc';
+export * from './Hero';
 export * from './States';
 export * from './Toast';
 export * from './Sheet';
