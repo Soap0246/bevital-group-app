@@ -7,11 +7,11 @@ import {
   adherence, completionsOn, streakDays, useCompleteExercise, useRecovery, useUndoCompletion, weeklyCompletionCounts, type ProgrammeWithItems,
 } from '@/api/recovery';
 import { BarChart, LineChart, ProgressRing } from '@/components/charts/charts';
-import { Button, Card, Chip, ChipRow, EmptyState, ErrorState, Icon, LoadingList, Logo, Row, Screen, SectionHeader, Sheet, Text, useToast } from '@/components/ui';
+import { Button, Card, Chip, ChipRow, EmptyState, ErrorState, Hero, Icon, LoadingList, Row, Screen, SectionHeader, Sheet, Text, useToast } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { getExerciseReminder, setExerciseReminder, type ReminderSetting } from '@/lib/notifications';
 import { buildProgressReportHtml, shareProgressReport } from '@/lib/report';
-import { colors, radius } from '@/theme';
+import { colors, radius, shadow } from '@/theme';
 
 function GoalBar({ title, pct, target }: { title: string; pct: number; target?: string | null }) {
   return (
@@ -21,7 +21,7 @@ function GoalBar({ title, pct, target }: { title: string; pct: number; target?: 
         <Text variant="bodyStrong" color="primaryDark">{pct}%</Text>
       </View>
       <View style={{ height: 10, borderRadius: 5, backgroundColor: colors.primaryLight, overflow: 'hidden' }}>
-        <View style={{ width: `${pct}%`, height: 10, borderRadius: 5, backgroundColor: colors.primary }} />
+        <View style={{ width: `${pct}%`, height: 10, borderRadius: 5, backgroundColor: colors.lime }} />
       </View>
       {target ? <Text variant="caption" color="textMuted">Target: {formatDate(target)}</Text> : null}
     </View>
@@ -102,10 +102,14 @@ export default function Recovery() {
   );
 
   return (
-    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>} refreshing={recovery.isRefetching} onRefresh={() => void recovery.refetch()}>
-      <Text variant="title" style={{ marginTop: 12 }}>My Recovery Journey</Text>
+    <Screen bleedTop refreshing={recovery.isRefetching} onRefresh={() => void recovery.refetch()}>
+      <Hero bottom={48}>
+        <Text variant="label" style={{ color: colors.lime, letterSpacing: 1 }}>RECOVERY</Text>
+        <Text variant="title" color="surface" style={{ marginTop: 2 }} accessibilityRole="header">My Recovery Journey</Text>
+        <Text variant="caption" style={{ color: 'rgba(255,255,255,0.85)', marginTop: 4 }}>Goals, home exercises and progress in one place.</Text>
+      </Hero>
       {(family.data ?? []).length > 0 ? (
-        <View style={{ marginTop: 12 }}>
+        <View style={{ marginTop: 16 }}>
           <ChipRow>
             <Chip label="Me" icon="person" selected={!familyId} onPress={() => setFamilyId(null)} />
             {(family.data ?? []).map((m) => <Chip key={m.id} label={m.full_name} icon="people" selected={familyId === m.id} onPress={() => setFamilyId(m.id)} />)}
@@ -118,7 +122,7 @@ export default function Recovery() {
           <EmptyState icon="pulse-outline" title="Your journey starts here" body="After your first session your physiotherapist can set goals and a home exercise programme that will appear here." actionLabel="Book a physiotherapist" onAction={() => router.push('/book')} />
         ) : (
           <View style={{ gap: 16, marginTop: 16 }}>
-            <Card>
+            <Card style={shadow.float}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18 }}>
                 <ProgressRing value={week?.pct ?? 0} size={112} label="Weekly exercise progress" sublabel="this week" />
                 <View style={{ flex: 1, gap: 10 }}>

@@ -3,10 +3,10 @@ import { Switch, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { friendlyError, phoneSchema } from '@bevital/shared';
 import { useUpdateAccount } from '@/api/profile';
-import { Avatar, Button, Card, Input, Logo, Row, Screen, Sheet, Text, useToast } from '@/components/ui';
+import { Avatar, Button, Card, Hero, Input, Row, Screen, Sheet, Text, useToast } from '@/components/ui';
 import { useA11y } from '@/lib/a11y';
 import { useAuth } from '@/lib/auth';
-import { colors } from '@/theme';
+import { colors, radius, shadow } from '@/theme';
 
 export default function Profile() {
   const router = useRouter();
@@ -28,31 +28,36 @@ export default function Profile() {
   };
 
   return (
-    <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>}>
-      <Card style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-        <Avatar name={profile?.full_name ?? '?'} size={64} />
-        <View style={{ flex: 1 }}>
-          <Text variant="heading" numberOfLines={1}>{profile?.full_name}</Text>
-          <Text variant="caption" color="textMuted" numberOfLines={1}>{session?.user.email}</Text>
-          {profile?.phone ? <Text variant="caption" color="textMuted">{profile.phone}</Text> : null}
+    <Screen bleedTop>
+      <Hero bottom={64}>
+        <Text variant="label" style={{ color: colors.lime, letterSpacing: 1 }}>MY ACCOUNT</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 14 }}>
+          <View style={{ padding: 3, borderRadius: 999, backgroundColor: 'rgba(255,255,255,0.9)' }}><Avatar name={profile?.full_name ?? '?'} size={64} /></View>
+          <View style={{ flex: 1 }}>
+            <Text variant="title" color="surface" numberOfLines={1} style={{ fontSize: 22, lineHeight: 28 }}>{profile?.full_name}</Text>
+            <Text variant="caption" numberOfLines={1} style={{ color: 'rgba(255,255,255,0.85)' }}>{session?.user.email}</Text>
+            {profile?.phone ? <Text variant="caption" style={{ color: 'rgba(255,255,255,0.85)' }}>{profile.phone}</Text> : null}
+          </View>
         </View>
-        <Button label="Edit" variant="secondary" size="md" fullWidth={false} onPress={() => { setName(profile?.full_name ?? ''); setPhone(profile?.phone ?? ''); setEditing(true); }} />
-      </Card>
+      </Hero>
+      <View style={[{ marginTop: -30 }, shadow.float, { borderRadius: radius.xl }]}>
+        <Button label="Edit profile" icon="create-outline" variant="outline" onPress={() => { setName(profile?.full_name ?? ''); setPhone(profile?.phone ?? ''); setEditing(true); }} />
+      </View>
 
-      <Text variant="label" color="textMuted" style={{ marginTop: 24, marginBottom: 4 }}>MY HEALTH</Text>
+      <Text variant="label" color="primary" style={{ marginTop: 26, marginBottom: 8, letterSpacing: 1 }}>MY HEALTH</Text>
       <Card padding={4} style={{ paddingHorizontal: 16 }}>
         <Row icon="heart-outline" title="Health profile" subtitle="Medical history, allergies, emergency contact" onPress={() => router.push('/health-profile')} />
         <Row icon="people-outline" title="Family accounts" subtitle="Book for children, parents and loved ones" onPress={() => router.push('/family')} />
         <Row icon="location-outline" title="My addresses" subtitle="For home physiotherapy" onPress={() => router.push('/addresses')} last />
       </Card>
 
-      <Text variant="label" color="textMuted" style={{ marginTop: 24, marginBottom: 4 }}>PAYMENTS</Text>
+      <Text variant="label" color="primary" style={{ marginTop: 26, marginBottom: 8, letterSpacing: 1 }}>PAYMENTS</Text>
       <Card padding={4} style={{ paddingHorizontal: 16 }}>
         <Row icon="receipt-outline" title="Payment history & receipts" onPress={() => router.push('/payments')} />
         <Row icon="ticket-outline" title="Packages & vouchers" onPress={() => router.push('/packages')} last />
       </Card>
 
-      <Text variant="label" color="textMuted" style={{ marginTop: 24, marginBottom: 4 }}>PREFERENCES</Text>
+      <Text variant="label" color="primary" style={{ marginTop: 26, marginBottom: 8, letterSpacing: 1 }}>PREFERENCES</Text>
       <Card padding={4} style={{ paddingHorizontal: 16 }}>
         <Row icon="notifications-outline" title="Notifications" onPress={() => router.push('/notifications')} />
         <Row icon="text-outline" title="Larger text" subtitle="Easier to read throughout the app"

@@ -4,25 +4,25 @@
 -- Account names (users + therapist display names)
 update public.users u set full_name = v.name
 from (values
-  ('patient1@dev.bevital.test',   'Nurul Huda'),
-  ('patient2@dev.bevital.test',   'Jason Lee'),
-  ('therapist1@dev.bevital.test', 'Aisha Rahman'),
-  ('therapist2@dev.bevital.test', 'Daniel Lim'),
-  ('therapist3@dev.bevital.test', 'Mei Ling Tan'),
-  ('therapist4@dev.bevital.test', 'Raj Kumar'),
-  ('therapist5@dev.bevital.test', 'Priya Nair')
-) as v(email, name)
-where u.email = v.email;
+  ('patient1@dev.bevital.test',   'patient@test.com',   'Nurul Huda'),
+  ('patient2@dev.bevital.test',   'patient2@test.com',  'Jason Lee'),
+  ('therapist1@dev.bevital.test', 'physio@test.com',    'Aisha Rahman'),
+  ('therapist2@dev.bevital.test', 'physio2@test.com',   'Daniel Lim'),
+  ('therapist3@dev.bevital.test', 'physio3@test.com',   'Mei Ling Tan'),
+  ('therapist4@dev.bevital.test', 'physio4@test.com',   'Raj Kumar'),
+  ('therapist5@dev.bevital.test', 'physio5@test.com',   'Priya Nair')
+) as v(email, short_email, name)
+where u.email in (v.email, v.short_email);
 
 update public.therapist_profiles tp set display_name = u.full_name
 from public.users u
-where u.id = tp.user_id and u.email like 'therapist%@dev.bevital.test';
+where u.id = tp.user_id and u.role = 'therapist' and tp.display_name ilike 'Demo%';
 
 -- Therapist profile text: drop "Demo profile." and "(demo)" markers
 update public.therapist_profiles set
   bio = nullif(btrim(regexp_replace(coalesce(bio, ''), '^Demo profile\.\s*', '')), ''),
   qualifications = array(select btrim(regexp_replace(q, '\s*\(demo\)', '', 'i')) from unnest(qualifications) as q)
-where user_id in (select id from public.users where email like 'therapist%@dev.bevital.test');
+where user_id in (select id from public.users where email like 'therapist%@dev.bevital.test' or email like 'physio%@test.com');
 
 -- Family members of the demo patient
 update public.family_members set full_name = 'Adam' where full_name = 'Demo Child';
