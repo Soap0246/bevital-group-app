@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import React, { useEffect, useRef } from 'react';
+import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
@@ -14,13 +14,28 @@ import { A11yProvider } from '@/lib/a11y';
 import { AuthProvider, useAuth } from '@/lib/auth';
 import { ToastProvider } from '@/components/ui';
 import { isSupabaseConfigured } from '@/config/env';
-import { SetupScreen, SplashView } from '@/components/AppStates';
+import { FullScreenLoader, SetupScreen, SplashView } from '@/components/AppStates';
 import { registerForPush } from '@/lib/notifications';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
+// Show a readable error (with retry) instead of a blank white page if any screen crashes.
+export { ErrorBoundary } from 'expo-router';
+
 function Navigator() {
   const { loading, session, role, profile } = useAuth();
+  const router = useRouter();
+  const wasSignedOut = useRef(false);
+
+  // After an actual sign-in, go to the role's home (otherwise the router may pick an arbitrary open route).
+  useEffect(() => {
+    if (loading) return;
+    if (!session) { wasSignedOut.current = true; return; }
+    if (wasSignedOut.current && role) {
+      wasSignedOut.current = false;
+      router.replace(role === 'therapist' ? '/(therapist)/(tabs)' : role === 'patient' ? '/(patient)/(tabs)' : '/admin-notice');
+    }
+  }, [loading, session, role, router]);
 
   useEffect(() => {
     if (session?.user.id && role) void registerForPush(session.user.id).catch(() => {});
@@ -50,6 +65,7 @@ function Navigator() {
         <Stack.Screen name="account-inactive" />
       </Stack.Protected>
       {/* Always reachable (deep links from emails) */}
+      <Stack.Screen name="notifications" />
       <Stack.Screen name="auth/callback" />
       <Stack.Screen name="reset-password" />
     </Stack>
@@ -66,7 +82,7 @@ export default function RootLayout() {
     if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded) return <FullScreenLoader />;
 
   return (
     <SafeAreaProvider>
