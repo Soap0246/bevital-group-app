@@ -64,12 +64,12 @@ describe('schema, seed data and shared-type parity', () => {
     assert.deepEqual(fromTs, fromDb);
   });
 
-  it('seeds the 12 required physiotherapy categories with matching slugs', async () => {
+  it('seeds the 8 physiotherapy-only categories with matching slugs', async () => {
     const { rows } = await db.query(`select slug, name from public.service_categories order by sort_order`);
-    assert.equal(rows.length, 12);
+    assert.equal(rows.length, 8);
     assert.deepEqual(rows.map((r) => r.slug), [...shared.SERVICE_CATEGORY_SLUGS]);
     assert.ok(rows.some((r) => r.name === 'Post-Operative Rehabilitation'));
-    assert.ok(rows.some((r) => r.name === 'Spine and Posture Rehabilitation'));
+    assert.ok(rows.some((r) => r.name === 'Back, Neck & Posture'));
   });
 
   it('seeds services with every field the marketplace needs', async () => {
@@ -77,7 +77,7 @@ describe('schema, seed data and shared-type parity', () => {
       select s.slug, s.description, s.conditions_treated, s.treatment_objectives, s.duration_minutes,
              s.supports_clinic, s.supports_home, s.price_clinic, s.price_home
         from public.services s`);
-    assert.ok(rows.length >= 24);
+    assert.ok(rows.length >= 12);
     for (const s of rows) {
       assert.ok(s.description.length > 20, `${s.slug} description`);
       assert.ok(s.conditions_treated.length > 0, `${s.slug} conditions`);

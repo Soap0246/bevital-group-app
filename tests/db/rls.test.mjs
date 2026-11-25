@@ -34,7 +34,7 @@ describe('security: roles, RLS and sensitive data', () => {
 
   describe('anonymous visitors', () => {
     it('can browse the public catalogue only', async () => {
-      assert.ok((await ANON.query(`select 1 from public.services`)).length >= 24);
+      assert.ok((await ANON.query(`select 1 from public.services`)).length >= 12);
       assert.ok((await ANON.query(`select 1 from public.clinics`)).length === 2);
       for (const t of ['users', 'bookings', 'payments', 'therapist_profiles', 'patient_medical_records', 'notifications', 'audit_logs']) {
         denied(await ANON.attempt(`select 1 from public.${t}`));

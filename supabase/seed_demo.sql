@@ -110,10 +110,10 @@ on conflict (therapist_id) do nothing;
 insert into public.therapist_services (therapist_id, service_id)
 select tp.id, s.id
 from (values
-  ('therapist1@dev.bevital.test', array['musculoskeletal','sports-injury','spine-posture','chronic-pain','post-operative','home-physiotherapy','workplace']),
-  ('therapist2@dev.bevital.test', array['paediatric','womens-health','geriatric','musculoskeletal','home-physiotherapy']),
-  ('therapist3@dev.bevital.test', array['stroke','neurological','geriatric','post-operative','home-physiotherapy']),
-  ('therapist4@dev.bevital.test', array['home-physiotherapy','geriatric','stroke','musculoskeletal','workplace','chronic-pain'])
+  ('therapist1@dev.bevital.test', array['musculoskeletal','sports-injury','spine-posture','manual-therapy','exercise-therapy','electrotherapy','post-operative']),
+  ('therapist2@dev.bevital.test', array['musculoskeletal','manual-therapy','exercise-therapy','spine-posture','electrotherapy']),
+  ('therapist3@dev.bevital.test', array['neurological','exercise-therapy','post-operative','manual-therapy']),
+  ('therapist4@dev.bevital.test', array['neurological','musculoskeletal','exercise-therapy','spine-posture','manual-therapy'])
 ) as v(email, cats)
 join public.users u on u.email = v.email
 join public.therapist_profiles tp on tp.user_id = u.id

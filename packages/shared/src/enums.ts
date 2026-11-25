@@ -251,15 +251,11 @@ export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
 export const SERVICE_CATEGORY_SLUGS = [
   'musculoskeletal',
+  'spine-posture',
   'sports-injury',
   'post-operative',
-  'stroke',
   'neurological',
-  'paediatric',
-  'geriatric',
-  'womens-health',
-  'chronic-pain',
-  'spine-posture',
-  'home-physiotherapy',
-  'workplace',
+  'manual-therapy',
+  'exercise-therapy',
+  'electrotherapy',
 ] as const;

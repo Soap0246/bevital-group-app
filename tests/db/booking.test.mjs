@@ -6,7 +6,7 @@ const iso = (t) => new Date(t).toISOString();
 const num = (v) => Number(v);
 
 describe('booking engine', () => {
-  let db, P1, P2, T1, T3, T4, ADMIN, SVC, SVC_FOLLOWUP, SVC_HOME, svc;
+  let db, P1, P2, T1, T3, T4, ADMIN, SVC, SVC_FOLLOWUP, SVC_HOME, SVC_CLINIC_ONLY, svc;
   let tid; // therapist profile ids by key
   let wed, thu, sun;
 
@@ -21,7 +21,8 @@ describe('booking engine', () => {
     svc = asService(db);
     SVC = await serviceId(db, 'msk-assessment');
     SVC_FOLLOWUP = await serviceId(db, 'msk-followup');
-    SVC_HOME = await serviceId(db, 'home-assessment');
+    SVC_HOME = await serviceId(db, 'msk-assessment');
+    SVC_CLINIC_ONLY = await serviceId(db, 'electro-session');
     tid = {
       t1: await therapistId(db, IDS.therapist1),
       t2: await therapistId(db, IDS.therapist2),
@@ -183,7 +184,7 @@ describe('booking engine', () => {
       assert.equal(errorCode(soon), 'BV_TOO_SOON');
       const unverified = await book(P2, { start: klTs(wed, '14:00'), therapist: tid.t5 });
       assert.equal(errorCode(unverified), 'BV_SLOT_UNAVAILABLE');
-      const wrongType = await book(P2, { start: klTs(wed, '14:00'), service: SVC_HOME });
+      const wrongType = await book(P1, { type: 'home', service: SVC_CLINIC_ONLY, start: klTs(wed, '14:00'), address: IDS.patient1Address, therapist: tid.t4 });
       assert.equal(errorCode(wrongType), 'BV_INVALID_SERVICE');
     });
 
@@ -489,7 +490,7 @@ describe('booking engine', () => {
       assert.equal(num(s.cancellation_rate), Math.round((1000 * truth.cancelled) / truth.total) / 10);
       assert.equal(num(s.verified_therapists), 4);
       assert.equal(num(s.pending_verification), 0);
-      assert.ok(Array.isArray(s.popular_services) && s.popular_services[0].name === 'Musculoskeletal Assessment & Treatment');
+      assert.ok(Array.isArray(s.popular_services) && s.popular_services[0].name === 'Initial Physiotherapy Assessment');
       assert.equal(s.therapist_utilisation.length, 4);
     });
 
