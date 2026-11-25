@@ -18,12 +18,12 @@ export default function Bookings() {
 
   return (
     <Screen header={<View style={{ paddingHorizontal: 20, paddingTop: 10 }}><Logo variant="nolb" height={40} /></View>} refreshing={bookings.isRefetching} onRefresh={() => void bookings.refetch()}>
-      <Text variant="title" style={{ marginTop: 12, marginBottom: 12 }}>My bookings</Text>
+      <Text variant="title" style={{ marginTop: 12, marginBottom: 12 }}>Your visits</Text>
       <Segmented value={tab} onChange={setTab} options={[{ value: 'upcoming', label: 'Upcoming' }, { value: 'past', label: 'Past' }]} />
       <View style={{ gap: 12, marginTop: 16 }}>
         {bookings.isLoading ? <LoadingList /> : bookings.isError ? <ErrorState error={bookings.error} onRetry={() => bookings.refetch()} /> : list.length === 0 ? (
-          <EmptyState icon="calendar-outline" title={tab === 'upcoming' ? 'No upcoming appointments' : 'No past appointments yet'}
-            body={tab === 'upcoming' ? 'When you book a session it will appear here with live status updates.' : 'Completed and cancelled appointments will appear here.'}
+          <EmptyState icon="calendar-outline" title={tab === 'upcoming' ? 'No upcoming visits' : 'No past visits yet'}
+            body={tab === 'upcoming' ? 'When you book a session it appears here with its live status.' : 'Completed and cancelled visits appear here.'}
             actionLabel={tab === 'upcoming' ? 'Book a physiotherapist' : undefined} onAction={() => router.push('/book')} />
         ) : list.map((b) => <AppointmentCard key={b.id} booking={b} onPress={() => router.push({ pathname: '/booking/[id]', params: { id: b.id } })} />)}
       </View>

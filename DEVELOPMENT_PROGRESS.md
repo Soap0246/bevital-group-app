@@ -108,3 +108,11 @@ page/action.
 | SMTP provider | branded auth emails at volume | Supabase default for dev |
 | Expo EAS project | push tokens, store builds | not created |
 | BeVital logo files + brand guidelines | branding | **blocking for release** |
+
+## UI/UX refresh — premium booking experience
+- New palette/type scale (26/18/15/13/12), flat buttons/cards with subtle borders, safe-area-aware tab bar (Home, Services, Visits, Recovery, Profile).
+- Home: next-visit card first (status, Pay now + countdown, Directions), Home/Clinic tiles with "from" prices, Popular services, one promo strip. Clinics, physios, packages and tips moved under Services.
+- Booking reduced to 4 steps (What do you need / When and where / Your physio / Review and pay) with sticky running-price bar, sold-out dates greyed, grouped time grid, trust facts (migration 8 `therapist_public_stats`).
+- Visit status screen (Confirmed → On the way → Arrived → Done), safety sheet, message/call placeholders where not yet available; payments list tucks away abandoned attempts and offers "Try again".
+- Update scripts for the hosted test project: `supabase/physio_only_update.sql`, `supabase/update_booking_ux.sql`, `supabase/clean_demo_labels.sql`.
+- Known gaps: in-app messaging and calling the physio, live ETA beyond distance, native device verification, pre-existing lint errors in older files.

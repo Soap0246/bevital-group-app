@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useCategories, useServices } from '@/api/catalog';
+import { useArticles, useCategories, useServices } from '@/api/catalog';
 import { ServiceCard } from '@/components/domain/cards';
-import { Chip, ChipRow, EmptyState, ErrorState, LoadingList, Logo, Screen, SearchBar, Segmented, Text } from '@/components/ui';
+import { colors } from '@/theme';
+import { ArticleCard } from '@/components/domain/cards';
+import { Chip, ChipRow, EmptyState, ErrorState, LoadingList, Logo, Row, Screen, ScrollRow, SearchBar, Segmented, Text } from '@/components/ui';
 
 /** Marketplace: all services come from the database (categories → services). */
 export default function Services() {
@@ -11,6 +13,7 @@ export default function Services() {
   const params = useLocalSearchParams<{ q?: string; category?: string }>();
   const categories = useCategories();
   const services = useServices();
+  const articles = useArticles();
   const [q, setQ] = useState(params.q ?? '');
   const [cat, setCat] = useState<string | null>(null);
   const [type, setType] = useState<'all' | 'clinic' | 'home'>('all');
@@ -51,6 +54,21 @@ export default function Services() {
           <ServiceCard key={s.id} service={s} category={catById.get(s.category_id)} onPress={() => router.push({ pathname: '/service/[slug]', params: { slug: s.slug } })} />
         ))}
       </View>
+
+      <Text variant="heading" style={{ marginTop: 32, marginBottom: 4 }} accessibilityRole="header">More from BeVital</Text>
+      <View style={{ borderRadius: 16, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, paddingHorizontal: 16 }}>
+        <Row icon="map-outline" title="Find a clinic" subtitle="Map, opening hours and directions" onPress={() => router.push('/clinics')} />
+        <Row icon="people-outline" title="Our physiotherapists" subtitle="Verified and ready to book" onPress={() => router.push('/physios')} />
+        <Row icon="ticket-outline" title="Packages" subtitle="Save with multi-session bundles" onPress={() => router.push('/packages')} last />
+      </View>
+      {(articles.data ?? []).length > 0 ? (
+        <>
+          <Text variant="heading" style={{ marginTop: 28, marginBottom: 12 }} accessibilityRole="header">Health tips</Text>
+          <ScrollRow>
+            {(articles.data ?? []).map((a) => <ArticleCard key={a.id} article={a} onPress={() => router.push({ pathname: '/article/[slug]', params: { slug: a.slug } })} />)}
+          </ScrollRow>
+        </>
+      ) : null}
     </Screen>
   );
 }

@@ -9,14 +9,14 @@ import { unwrap } from './catalog';
 export interface BookingWithRefs extends BookingRow {
   service: { id: UUID; name: string; slug: string; duration_minutes: number } | null;
   therapist: { id: UUID; display_name: string; avatar_url: string | null; user_id: UUID } | null;
-  clinic: { id: UUID; name: string; address_line1: string; city: string; latitude: number | null; longitude: number | null } | null;
+  clinic: { id: UUID; name: string; address_line1: string; city: string; latitude: number | null; longitude: number | null; phone: string | null } | null;
   family: { full_name: string } | null;
 }
 
 const BOOKING_SELECT = `*,
   service:services(id,name,slug,duration_minutes),
   therapist:therapist_profiles!bookings_therapist_id_fkey(id,display_name,avatar_url,user_id),
-  clinic:clinics(id,name,address_line1,city,latitude,longitude),
+  clinic:clinics(id,name,address_line1,city,latitude,longitude,phone),
   family:family_members(full_name)`;
 
 export function useMyBookings() {

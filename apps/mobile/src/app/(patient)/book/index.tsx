@@ -89,7 +89,7 @@ export default function WhatDoYouNeed() {
             return (
               <Pressable key={o.type} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={`${o.title}, ${o.hint}`}
                 onPress={() => update({ type: o.type })}
-                style={{ flex: 1, minHeight: 112, padding: 14, gap: 6, borderRadius: radius.lg, borderWidth: on ? 2 : 1, borderColor: on ? colors.primary : colors.border, backgroundColor: on ? colors.primaryLight : colors.surface }}>
+                style={{ flex: 1, minHeight: 112, padding: on ? 13 : 14, gap: 6, borderRadius: radius.lg, borderWidth: on ? 2 : 1, borderColor: on ? colors.primary : colors.border, backgroundColor: on ? colors.primaryLight : colors.surface }}>
                 <Icon name={o.icon} size={24} color={on ? 'primary' : 'inkSoft'} />
                 <Text variant="subheading">{o.title}</Text>
                 <Text variant="caption" color="textMuted">{o.hint}</Text>

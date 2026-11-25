@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View, type DimensionValue, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { friendlyError } from '@bevital/shared';
 import { colors, radius } from '@/theme';
 import { Text } from './Text';
@@ -8,10 +8,12 @@ import { Icon, type IconName } from './Icon';
 import { Button } from './Button';
 
 export function Skeleton({ width = '100%', height = 16, rounded = 8, style }: { width?: DimensionValue; height?: number; rounded?: number; style?: StyleProp<ViewStyle> }) {
-  const o = useSharedValue(0.5);
+  const reduce = useReducedMotion();
+  const o = useSharedValue(reduce ? 0.8 : 0.5);
   useEffect(() => {
+    if (reduce) return;
     o.value = withRepeat(withTiming(1, { duration: 800 }), -1, true);
-  }, [o]);
+  }, [o, reduce]);
   const anim = useAnimatedStyle(() => ({ opacity: o.value }));
   return <Animated.View style={[{ width, height, borderRadius: rounded, backgroundColor: colors.border }, anim, style]} />;
 }

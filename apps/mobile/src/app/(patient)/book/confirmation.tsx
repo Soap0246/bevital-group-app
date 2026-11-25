@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { APPOINTMENT_TYPE_LABELS, BOOKING_STATUS_META, formatDate, formatMYR, formatTime } from '@bevital/shared';
 import { useBooking } from '@/api/bookings';
 import { Banner, Button, Card, Icon, LoadingList, Row, Screen, StatusBadge, Text } from '@/components/ui';
@@ -27,7 +27,7 @@ export default function Confirmation() {
       </>
     }>
       <View style={{ alignItems: 'center', gap: 12, paddingTop: 28, paddingBottom: 12 }}>
-        <Animated.View entering={ZoomIn.springify()} style={{ width: 104, height: 104, borderRadius: 52, backgroundColor: paid ? colors.successLight : colors.warningLight, alignItems: 'center', justifyContent: 'center' }}>
+        <Animated.View entering={FadeIn.duration(200)} style={{ width: 104, height: 104, borderRadius: 52, backgroundColor: paid ? colors.successLight : colors.warningLight, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name={paid ? 'checkmark-circle' : 'time'} size={72} color={paid ? 'success' : 'warning'} />
         </Animated.View>
         <Text variant="title" align="center">{paid ? 'Booking received!' : b.status === 'cancelled' ? 'Booking cancelled' : 'Waiting for payment'}</Text>
