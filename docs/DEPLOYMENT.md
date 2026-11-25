@@ -67,3 +67,17 @@ variables at build time. Put it behind SSO / IP allow-list if possible.
 - [ ] Full end-to-end pass on real iOS + Android devices (booking, home visit tracking, push, document upload, PDF report)
 - [ ] RLS tests green in CI against a real `supabase start` stack (`npm test` + add an API-level suite)
 - [ ] Backups & restore drill; monitoring/alerting; admin MFA; penetration test
+
+## Demo mode (test deployments only)
+Testers and stakeholders can enter with one tap ("Try the demo: As a patient / As a physio") instead of typing a login.
+Set these in the Vercel project (Settings → Environment Variables) and redeploy:
+
+| Variable | Example |
+| --- | --- |
+| `EXPO_PUBLIC_DEMO_MODE` | `true` |
+| `EXPO_PUBLIC_DEMO_PATIENT_EMAIL` / `..._PASSWORD` | a throw-away patient login from `supabase/simple_logins.sql` |
+| `EXPO_PUBLIC_DEMO_PHYSIO_EMAIL` / `..._PASSWORD` | a throw-away physio login |
+
+The logins are bundled into the app, so only ever use throw-away accounts on a test Supabase project, and leave
+`EXPO_PUBLIC_DEMO_MODE` unset on any build that touches real patient data. While signed in as a demo account the app
+shows a "Demo mode" pill (Home) and a notice (Profile). All testers share the same demo accounts and sample data.

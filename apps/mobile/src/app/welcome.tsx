@@ -8,6 +8,8 @@ import { BRAND } from '@bevital/shared';
 import { colors } from '@/theme';
 import { Button, Icon, Logo, Text, type IconName } from '@/components/ui';
 import { ONBOARDING_KEY } from '@/config/storageKeys';
+import { DemoAccess } from '@/components/DemoAccess';
+import { demoAvailable } from '@/config/env';
 
 const SLIDES: Array<{ icon: IconName; title: string; body: string }> = [
   { icon: 'flash', title: 'Book a physiotherapist in minutes', body: 'Choose your service, pick a time that works for you and see only the physiotherapists who are genuinely available.' },
@@ -18,7 +20,10 @@ const SLIDES: Array<{ icon: IconName; title: string; body: string }> = [
 
 export default function Welcome() {
   const router = useRouter();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  // The demo buttons add height: shrink the artwork so the logo is never covered on short screens.
+  const compact = demoAvailable || height < 760;
+  const heroSize = compact ? 112 : 168;
   const [index, setIndex] = useState(0);
   const onViewable = useRef<NonNullable<React.ComponentProps<typeof FlatList>['onViewableItemsChanged']>>(({ viewableItems }) => {
     if (viewableItems[0]?.index != null) setIndex(viewableItems[0].index);
@@ -32,7 +37,7 @@ export default function Welcome() {
   return (
     <SafeAreaView style={styles.root}>
       <Animated.View entering={FadeInDown.duration(500)} style={styles.logo}>
-        <Logo variant="main" height={124} />
+        <Logo variant="main" height={compact ? 96 : 124} />
       </Animated.View>
 
       <FlatList
@@ -45,12 +50,12 @@ export default function Welcome() {
         viewabilityConfig={{ itemVisiblePercentThreshold: 60 }}
         renderItem={({ item }) => (
           <View style={{ width, paddingHorizontal: 32, alignItems: 'center', justifyContent: 'center', gap: 18 }}>
-            <View style={styles.hero}><Icon name={item.icon} size={72} color="primary" /></View>
+            <View style={[styles.hero, { width: heroSize, height: heroSize, borderRadius: heroSize / 2 }]}><Icon name={item.icon} size={compact ? 48 : 72} color="primary" /></View>
             <Text variant="title" align="center">{item.title}</Text>
             <Text color="textMuted" align="center">{item.body}</Text>
           </View>
         )}
-        style={{ flexGrow: 0 }}
+        style={{ flexGrow: 0, minHeight: compact ? 0 : undefined }}
         contentContainerStyle={{ alignItems: 'center' }}
         accessibilityLabel="Introduction to BeVital"
       />
@@ -62,6 +67,7 @@ export default function Welcome() {
       <View style={styles.actions}>
         <Button label="Create account" onPress={() => go('/(auth)/register')} />
         <Button label="I already have an account" variant="outline" onPress={() => go('/(auth)/login')} />
+        <DemoAccess />
         <Text variant="caption" color="textSubtle" align="center" style={{ marginTop: 6 }}>{BRAND.fullTagline}</Text>
       </View>
     </SafeAreaView>

@@ -6,12 +6,13 @@ import { useUpdateAccount } from '@/api/profile';
 import { Avatar, Button, Card, Hero, Input, Row, Screen, Sheet, Text, useToast } from '@/components/ui';
 import { useA11y } from '@/lib/a11y';
 import { useAuth } from '@/lib/auth';
+import { Banner } from '@/components/ui';
 import { colors, radius, shadow } from '@/theme';
 
 export default function Profile() {
   const router = useRouter();
   const toast = useToast();
-  const { profile, session, signOut } = useAuth();
+  const { profile, session, signOut, isDemo } = useAuth();
   const { largeText, setLargeText } = useA11y();
   const update = useUpdateAccount();
   const [editing, setEditing] = useState(false);
@@ -44,6 +45,7 @@ export default function Profile() {
         <Button label="Edit profile" icon="create-outline" variant="outline" onPress={() => { setName(profile?.full_name ?? ''); setPhone(profile?.phone ?? ''); setEditing(true); }} />
       </View>
 
+      {isDemo ? <View style={{ marginTop: 20 }}><Banner tone="warning" icon="flask-outline" title="You are in demo mode" body="This is a shared test account with sample data. Anything you book is visible to other testers." /></View> : null}
       <Text variant="label" color="primary" style={{ marginTop: 26, marginBottom: 8, letterSpacing: 1 }}>MY HEALTH</Text>
       <Card padding={4} style={{ paddingHorizontal: 16 }}>
         <Row icon="heart-outline" title="Health profile" subtitle="Medical history, allergies, emergency contact" onPress={() => router.push('/health-profile')} />

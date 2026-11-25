@@ -7,6 +7,7 @@ import { Banner, Button, Input, Text, useToast } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { useZodForm } from '@/lib/useZodForm';
 import { env } from '@/config/env';
+import { DemoAccess } from '@/components/DemoAccess';
 
 export default function Login() {
   const router = useRouter();
@@ -46,6 +47,7 @@ export default function Login() {
         }} />
       ) : null}
       {env.phoneAuthEnabled ? <Button label="Log in with phone number" variant="outline" icon="call-outline" onPress={() => router.push('/(auth)/phone')} /> : null}
+      <DemoAccess />
       <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 8 }}>
         <Text color="textMuted">New to BeVital?</Text>
         <Pressable accessibilityRole="link" onPress={() => router.replace('/(auth)/register')} hitSlop={8}>

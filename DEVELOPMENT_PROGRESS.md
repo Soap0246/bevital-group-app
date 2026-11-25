@@ -116,3 +116,6 @@ page/action.
 - Visit status screen (Confirmed → On the way → Arrived → Done), safety sheet, message/call placeholders where not yet available; payments list tucks away abandoned attempts and offers "Try again".
 - Update scripts for the hosted test project: `supabase/physio_only_update.sql`, `supabase/update_booking_ux.sql`, `supabase/clean_demo_labels.sql`.
 - Known gaps: in-app messaging and calling the physio, live ETA beyond distance, native device verification, pre-existing lint errors in older files.
+
+## Demo mode
+Env-gated one-tap entry for testers (`EXPO_PUBLIC_DEMO_MODE`, see docs/DEPLOYMENT.md). Off by default; no credentials live in source.

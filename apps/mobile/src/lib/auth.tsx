@@ -3,7 +3,7 @@ import * as Linking from 'expo-linking';
 import type { Session } from '@supabase/supabase-js';
 import type { TherapistProfileRow, UserRole, UserRow } from '@bevital/shared';
 import { supabase } from './supabase';
-import { isSupabaseConfigured } from '@/config/env';
+import { demoAccounts, isSupabaseConfigured, type DemoRole } from '@/config/env';
 
 export interface SignUpInput {
   fullName: string;
@@ -21,6 +21,10 @@ interface AuthContextValue {
   role: UserRole | null;
   therapist: TherapistProfileRow | null;
   signIn: (email: string, password: string) => Promise<void>;
+  /** One-tap sign-in with a configured demo account (demo builds only). */
+  signInDemo: (role: DemoRole) => Promise<void>;
+  /** true while signed in as one of the demo accounts */
+  isDemo: boolean;
   signUp: (input: SignUpInput) => Promise<{ needsEmailVerification: boolean }>;
   signOut: () => Promise<void>;
   sendPasswordReset: (email: string) => Promise<void>;
@@ -92,6 +96,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       },
+      signInDemo: async (role) => {
+        const account = demoAccounts[role];
+        if (!account) throw new Error('Demo mode is not enabled in this build.');
+        const { error } = await supabase.auth.signInWithPassword(account);
+        if (error) throw error;
+      },
+      isDemo: !!session?.user.email && [demoAccounts.patient?.email, demoAccounts.therapist?.email].includes(session.user.email),
       signUp: async ({ fullName, email, phone, password, role }) => {
         const { data, error } = await supabase.auth.signUp({
           email,

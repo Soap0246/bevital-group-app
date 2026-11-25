@@ -9,6 +9,7 @@ import { useNotifications } from '@/api/profile';
 import { Button, Hero, HeroLogo, Icon, Screen, Skeleton, StatusBadge, Text, type IconName } from '@/components/ui';
 import { useCountdown } from '@/hooks/useCountdown';
 import { useAuth } from '@/lib/auth';
+import { DemoPill } from '@/components/DemoAccess';
 import { colors, radius, shadow } from '@/theme';
 
 function Bell() {
@@ -137,7 +138,8 @@ export default function Home() {
           <HeroLogo />
           <Bell />
         </View>
-        <View style={{ marginTop: 22, gap: 4 }}>
+        <View style={{ marginTop: 14 }}><DemoPill /></View>
+        <View style={{ marginTop: 12, gap: 4 }}>
           <Text variant="label" style={{ color: colors.lime, letterSpacing: 1 }}>{greetingFor().toUpperCase()}</Text>
           <Text variant="title" color="surface" accessibilityRole="header">Hi {firstName}, how can we help today?</Text>
         </View>
