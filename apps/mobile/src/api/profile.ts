@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   AddressRow, FamilyMemberRow, MedicalRecordRow, NotificationRow, PackagePurchaseRow, PackageRow, PatientProfileRow, UserRow,
 } from '@bevital/shared';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { keys } from '@/lib/query';
 import { useAuth } from '@/lib/auth';
@@ -169,10 +169,11 @@ export function useMyPackages() {
 export function useNotifications() {
   const qc = useQueryClient();
   const { session } = useAuth();
+  const uid = useRef(Math.random().toString(36).slice(2)).current;
   useEffect(() => {
     if (!session) return;
     const ch = supabase
-      .channel(`notifications-${session.user.id}`)
+      .channel(`notifications-${session.user.id}-${uid}`)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${session.user.id}` }, () => {
         qc.invalidateQueries({ queryKey: keys.notifications });
       })
@@ -180,7 +181,7 @@ export function useNotifications() {
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [qc, session]);
+  }, [qc, session, uid]);
 
   return useQuery({
     queryKey: keys.notifications,

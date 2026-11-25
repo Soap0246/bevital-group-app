@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import type { AppointmentType, BookingQuote, BookingRow, BookingStatus, BookingStatusHistoryRow, PaymentMethod, PaymentRow, UUID } from '@bevital/shared';
 import { supabase } from '@/lib/supabase';
 import { keys } from '@/lib/query';
@@ -52,10 +52,12 @@ export function useBookingHistory(id: string | undefined) {
 /** Re-fetch bookings the moment the database changes (status updates from the therapist, payments, ...). */
 export function useBookingsRealtime(column: 'patient_user_id' | 'therapist_id', value: string | undefined) {
   const qc = useQueryClient();
+  // Unique per hook instance: several screens subscribe at once and a shared name would be re-used after subscribe().
+  const uid = useRef(Math.random().toString(36).slice(2)).current;
   useEffect(() => {
     if (!value) return;
     const channel = supabase
-      .channel(`bookings-${column}-${value}`)
+      .channel(`bookings-${column}-${value}-${uid}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings', filter: `${column}=eq.${value}` }, (payload) => {
         qc.invalidateQueries({ queryKey: ['bookings'] });
         const id = (payload.new as { id?: string } | null)?.id;
@@ -65,7 +67,7 @@ export function useBookingsRealtime(column: 'patient_user_id' | 'therapist_id', 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [qc, column, value]);
+  }, [qc, column, value, uid]);
 }
 
 // ───────────────────────── Quote & create ─────────────────────────

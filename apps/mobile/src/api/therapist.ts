@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Location from 'expo-location';
 import { Platform } from 'react-native';
@@ -105,6 +105,7 @@ export function useShareLiveLocation(bookingId: string | undefined, therapistId:
 /** Patient side: the therapist's real position, when (and only when) the therapist device is reporting one. */
 export function useLiveLocation(bookingId: string | undefined, active: boolean) {
   const qc = useQueryClient();
+  const uid = useRef(Math.random().toString(36).slice(2)).current;
   const query = useQuery({
     queryKey: ['live-location', bookingId],
     enabled: !!bookingId && active,
@@ -117,14 +118,14 @@ export function useLiveLocation(bookingId: string | undefined, active: boolean) 
   useEffect(() => {
     if (!bookingId || !active) return;
     const ch = supabase
-      .channel(`live-${bookingId}`)
+      .channel(`live-${bookingId}-${uid}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'therapist_live_locations', filter: `booking_id=eq.${bookingId}` }, () =>
         qc.invalidateQueries({ queryKey: ['live-location', bookingId] }))
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [bookingId, active, qc]);
+  }, [bookingId, active, qc, uid]);
   return query;
 }
 
